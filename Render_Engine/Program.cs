@@ -1,4 +1,8 @@
 ﻿using Render_Engine.Util;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Collections;
+using System.Diagnostics;
 
 namespace Render_Engine
 {
@@ -6,13 +10,16 @@ namespace Render_Engine
     {
         public static void Main(string[] args)
         {
-            Point p1 = new Point(1,2,3);
-            Point p2 = new Point(2,3,4);
-            Vector3D v1 = new Vector3D(1,2,3);
-            Vector3D v2 = new Vector3D(2,3,4);
+            string fileName = "output.png";
 
-            Normal n = v1.CrossProduct(v2);
-            
+            World world = new World();
+            Bitmap bitmap;
+
+            world.Build();
+            bitmap = world.RenderScene();
+
+            bitmap.Save(fileName, ImageFormat.Png);
+            //Process.Start($"C:\\Users\\charl\\OneDrive\\Desktop\\Render_Engine\\Render_Engine\\bin\\Debug\\net8.0\\{fileName}.png");
         }
     }
 }
