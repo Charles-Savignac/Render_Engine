@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.Collections;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Render_Engine
 {
@@ -19,7 +20,6 @@ namespace Render_Engine
             bitmap = world.RenderScene();
 
             bitmap.Save(fileName, ImageFormat.Png);
-            //Process.Start($"C:\\Users\\charl\\OneDrive\\Desktop\\Render_Engine\\Render_Engine\\bin\\Debug\\net8.0\\{fileName}.png");
         }
     }
 }
