@@ -27,5 +27,12 @@ namespace Render_Engine.Util
         /// </summary>
         /// <param name="p">A point containing X, Y, and Z values.</param>
         public Normal(Point p) : base(p.X, p.Y, p.Z) { }
+
+        public void Assigne(VectorClass v)
+        {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+        }
     }
 }

@@ -30,6 +30,16 @@ namespace Render_Engine.Util
             Depth = 0;
         }
 
+        public Ray(Ray r)
+        {
+            Origin = r.Origin;
+            Direction = r.Direction;
+
+            T_min = r.T_min;
+            T_max = r.T_max;
+            Depth = r.Depth;
+        }
+
         /// <summary>
         /// Creates a ray from given origin, direction, and parameters.
         /// </summary>

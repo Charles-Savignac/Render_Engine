@@ -1,9 +1,7 @@
 ﻿using Render_Engine.Shapes;
 using Render_Engine.Util;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Render_Engine
 {
@@ -25,7 +23,10 @@ namespace Render_Engine
 
         public void AddShapes()
         {
-            Shapes.Add(new Sphere(this, new Util.Point(0, 0, 0), Color.Red, 100));
+            Sphere s1 = new Sphere(this, new Util.Point(0, 0, 0), Color.Red, 100);
+            s1.AddTransformation(GeometricTransform.Translate(100, 0, 0));
+
+            Shapes.Add(s1);
         }
 
         public Bitmap RenderScene()
@@ -44,8 +45,8 @@ namespace Render_Engine
             {
                 for (int colunm = 0; colunm < View_plan.Y_res; colunm++)
                 {
-                    float x = View_plan.Pixel_size * (colunm - 0.5f * (View_plan.X_res - 1));
-                    float y = View_plan.Pixel_size * (row - 0.5f * (View_plan.Y_res - 1));
+                    float x = View_plan.Pixel_size * (row - 0.5f * (View_plan.X_res - 1));
+                    float y = View_plan.Pixel_size * (colunm - 0.5f * (View_plan.Y_res - 1));
 
                     foreach (Shape shape in Shapes)
                     {
