@@ -23,10 +23,22 @@ namespace Render_Engine
 
         public void AddShapes()
         {
-            Sphere s1 = new Sphere(this, new Util.Point(0, 0, 0), Color.Red, 100);
-            s1.AddTransformation(GeometricTransform.Translate(100, 0, 0));
+            Sphere sp1 = new Sphere(this, new Util.Point(), Color.Red, 100);
+            Plan lp1 = new Plan(this, new Util.Point(), Color.Red, 100, 100);
+            Cylinder cy1 = new Cylinder(this, new Util.Point(), Color.Red, 100, -25, 25);
+            Cube cu1 = new Cube(this, new Util.Point(), Color.Red, 100);
+            Cone co1 = new Cone(this, new Util.Point(), Color.Red, 100, 200);
 
-            Shapes.Add(s1);
+            cy1.AddTransformation(GeometricTransform.RotateX(85), GeometricTransform.Translate(10, 10 ,10));
+
+            cu1.AddTransformation(GeometricTransform.RotateX(45), GeometricTransform.RotateY(45));
+
+            Shapes.Add(co1);
+
+            foreach (Shape shape in Shapes)
+            {
+                Console.WriteLine(shape);
+            }
         }
 
         public Bitmap RenderScene()

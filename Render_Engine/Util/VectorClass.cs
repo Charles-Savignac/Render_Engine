@@ -1,7 +1,4 @@
-﻿using System;
-using System.Numerics;
-
-namespace Render_Engine.Util
+﻿namespace Render_Engine.Util
 {
     /// <summary>
     /// Abstract parent class for vector-type data structures.

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Render_Engine.Util
+﻿namespace Render_Engine.Util
 {
     /// <summary>
     /// Represents a point in 3D space with X, Y, and Z coordinates.

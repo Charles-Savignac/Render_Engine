@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Render_Engine.Util
+﻿namespace Render_Engine.Util
 {
     /// <summary>
     /// Represents a 3D vector with X, Y, and Z components.

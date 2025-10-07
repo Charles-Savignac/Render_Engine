@@ -1,17 +1,12 @@
 ﻿using Render_Engine.Acceleration;
 using Render_Engine.Util;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Render_Engine.Shapes
 {
     internal abstract class Shape
     {
+        public int Id { get; set; }
         public World Present_world { get; init; }
         public Util.Point Origine { get; set; }
         public Color Shape_color { get; set; }
@@ -20,9 +15,13 @@ namespace Render_Engine.Shapes
         public BoundingBox WorldBoundingBox { get; protected set; }
         public float Surface { get; protected set; }
 
+        private static int IdCounter = 0;
+
 
         public Shape(World world, Util.Point o, Color color)
         {
+            Id = ++IdCounter;
+
             Present_world = world;
             Origine = o;
             Shape_color = color;
@@ -34,14 +33,14 @@ namespace Render_Engine.Shapes
         protected abstract bool Intersects(Ray r, ref float t);
         protected abstract Normal GetNormal(Ray r, float t);
 
-        public  Color TraceRay(Ray r)
+        public Color TraceRay(Ray r)
         {
             float t = 0;
 
             if (Intersects(r, ref t))
             {
                 Normal n = GetNormal(r, t);
-                float blendScalair = r.Direction * n;
+                float blendScalair = MathF.Abs(r.Direction * n);
 
                 return Blend(blendScalair);
             }
@@ -52,8 +51,8 @@ namespace Render_Engine.Shapes
         public Color Blend(float scalar)
         {
             int r = (int)Math.Clamp(Shape_color.R * scalar, 0, 255);
-            int g = (int)Math.Clamp(Shape_color.R * scalar, 0, 255);
-            int b = (int)Math.Clamp(Shape_color.R * scalar, 0, 255);
+            int g = (int)Math.Clamp(Shape_color.G * scalar, 0, 255);
+            int b = (int)Math.Clamp(Shape_color.B * scalar, 0, 255);
 
             return Color.FromArgb(r, g, b);
         }
@@ -129,6 +128,21 @@ namespace Render_Engine.Shapes
             localRay.Direction = (ApplyInvTransformationOnVector(r.Direction));
             localRay.Origin = (ApplyInvTransformationOnPoint(r.Origin));
             return localRay;
+        }
+
+        protected void Swap(ref float a, ref float b)
+        {
+            float temp = a;
+            a = b;
+            b = temp;
+        }
+
+        public override string ToString()
+        {
+            return $"   Color: {Shape_color.Name}\n" +
+                   $"   Center: {ApplyTransformationOnPoint(Origine)}\n" +
+                   $"   Transformation Matrix: {Transformation}\n\n" +
+                   $"   Bounding Box: {WorldBoundingBox}\n";
         }
     }
 }

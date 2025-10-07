@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Render_Engine.Util
+﻿namespace Render_Engine.Util
 {
     /// <summary>
     /// Represents a normal vector in 3D space.

@@ -4,19 +4,23 @@ using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
-    internal class Sphere : Shape
+    internal class Cylinder : Shape
     {
-        public float Radius { get; set; }
+        public float Radius { get; private set; }
+        public float MaxY { get; private set; }
+        public float MinY { get; private set; }
 
-        public Sphere(World w, Util.Point origine, Color color, float radius) : base(w, origine, color)
+        public Cylinder(World w, Util.Point o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(w, o, c)
         {
             Radius = radius;
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, -radius, -radius), new Util.Point(radius, radius, radius));
+            MaxY = maxY;
+            MinY = minY;
+
+            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, minY, -radius), new Util.Point(radius, maxY, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
-            Surface = 4 * MathF.PI * Radius * Radius;
+            Surface = 2 * MathF.PI * Radius * (MaxY - MinY);
         }
-
 
         protected override bool Intersects(Ray worldRay, ref float t)
         {
@@ -27,17 +31,19 @@ namespace Render_Engine.Shapes
                 float t0;
                 float t1;
 
-                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Y, 2) + MathF.Pow(r.Direction.Z, 2);
-                float b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Y * r.Origin.Y + r.Direction.Z * r.Origin.Z);
-                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Y, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius, 2);
+                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Z, 2);
+                float b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Z * r.Origin.Z);
+                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius, 2);
 
-                float delta = MathF.Pow(b, 2) - 4 * a * c;
+                float discriminant = MathF.Pow(b, 2) - 4 * a * c;
 
-                if (delta < 0)
+                if (discriminant < 0)
                     return false;
 
-                t0 = (-b - MathF.Sqrt(delta)) / (2 * a);
-                t1 = (-b + MathF.Sqrt(delta)) / (2 * a);
+                float sqrtDiscriminant = MathF.Sqrt(discriminant);
+
+                t0 = (-b - sqrtDiscriminant) / (2 * a);
+                t1 = (-b + sqrtDiscriminant) / (2 * a);
 
                 if (t0 < r.T_min || t0 > r.T_max)
                     if (t1 < r.T_min || t1 > r.T_max)
@@ -64,20 +70,12 @@ namespace Render_Engine.Shapes
 
             Normal n = new Normal();
             VectorClass result;
-
             float z = r.Origin.Z + t * r.Direction.Z;
-            float theta = MathF.Acos(r.Origin.Y / Radius);
 
-            float rsinTheta = MathF.Sqrt(MathF.Pow(r.Origin.X, 2) + MathF.Pow(z, 2));
-            float cosFi = z / (Radius * MathF.Sin(theta));
-            float sinFi = r.Origin.X / (Radius * MathF.Sin(theta));
+            Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * (r.Origin.X));
+            Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
 
-            Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * r.Origin.X);
-            Vector3D vPrime = new Vector3D(r.Origin.Y * sinFi, -rsinTheta, r.Origin.Y * cosFi);
-
-            vPrime = (Vector3D)(vPrime * MathF.PI);
-
-            result = uPrime.CrossProduct(vPrime);
+            result = uPrime.CrossProduct(VPrime);
             result.Normalize();
             n.Assigne(result);
 
@@ -87,8 +85,10 @@ namespace Render_Engine.Shapes
         public override string ToString()
         {
             return $"======Shape_{Id}======\n" +
-                   $"   Type: Sphere\n" +
+                   $"   Type: Cylinder\n" +
                    $"   Radius: {Radius}\n" +
+                   $"   MinY: {MinY}\n" +
+                   $"   MaxY: {MaxY}\n" +
                    base.ToString();
         }
     }

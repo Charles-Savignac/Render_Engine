@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Render_Engine.Util
+﻿namespace Render_Engine.Util
 {
     /// <summary>
     /// Represents a ray in 3D space, defined by an origin point and a direction vector.

@@ -4,19 +4,21 @@ using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
-    internal class Sphere : Shape
+    internal class Cone : Shape
     {
-        public float Radius { get; set; }
+        public float Radius { get; private set; }
+        public float Height { get; private set; }
 
-        public Sphere(World w, Util.Point origine, Color color, float radius) : base(w, origine, color)
+        public Cone(World w, Util.Point p, Color c, float radius = 1.0f, float height = 1.0f) : base(w, p, c)
         {
             Radius = radius;
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, -radius, -radius), new Util.Point(radius, radius, radius));
+            Height = height;
+
+            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, 0, -radius), new Util.Point(radius, height, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
-            Surface = 4 * MathF.PI * Radius * Radius;
+            Surface = MathF.PI * radius * MathF.Sqrt(radius * radius + height * height);
         }
-
 
         protected override bool Intersects(Ray worldRay, ref float t)
         {
@@ -27,17 +29,19 @@ namespace Render_Engine.Shapes
                 float t0;
                 float t1;
 
-                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Y, 2) + MathF.Pow(r.Direction.Z, 2);
-                float b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Y * r.Origin.Y + r.Direction.Z * r.Origin.Z);
-                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Y, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius, 2);
+                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Z, 2) - MathF.Pow(Radius / Height, 2) * MathF.Pow(r.Direction.Y, 2);
+                float b = 2 * (r.Origin.X * r.Direction.X + r.Origin.Z * r.Direction.Z - (Radius / Height) * r.Origin.Y * r.Direction.Y);
+                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius / Height, 2) * MathF.Pow(r.Origin.Y, 2);
 
-                float delta = MathF.Pow(b, 2) - 4 * a * c;
+                float discriminant = MathF.Pow(b, 2) - 4 * a * c;
 
-                if (delta < 0)
+                if (discriminant < 0)
                     return false;
 
-                t0 = (-b - MathF.Sqrt(delta)) / (2 * a);
-                t1 = (-b + MathF.Sqrt(delta)) / (2 * a);
+                float sqrtDiscriminant = MathF.Sqrt(discriminant);
+
+                t0 = (-b - sqrtDiscriminant) / (2 * a);
+                t1 = (-b + sqrtDiscriminant) / (2 * a);
 
                 if (t0 < r.T_min || t0 > r.T_max)
                     if (t1 < r.T_min || t1 > r.T_max)
@@ -65,31 +69,31 @@ namespace Render_Engine.Shapes
             Normal n = new Normal();
             VectorClass result;
 
+            float x = r.Origin.X + t * r.Direction.X;
             float z = r.Origin.Z + t * r.Direction.Z;
-            float theta = MathF.Acos(r.Origin.Y / Radius);
 
-            float rsinTheta = MathF.Sqrt(MathF.Pow(r.Origin.X, 2) + MathF.Pow(z, 2));
-            float cosFi = z / (Radius * MathF.Sin(theta));
-            float sinFi = r.Origin.X / (Radius * MathF.Sin(theta));
+            float slope = Radius / Height;
 
-            Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * r.Origin.X);
-            Vector3D vPrime = new Vector3D(r.Origin.Y * sinFi, -rsinTheta, r.Origin.Y * cosFi);
-
-            vPrime = (Vector3D)(vPrime * MathF.PI);
+            Vector3D uPrime = new Vector3D(2 * MathF.PI * (z), 0, -2 * MathF.PI * r.Origin.X);
+            Vector3D vPrime = new Vector3D(0, Height, Radius);
 
             result = uPrime.CrossProduct(vPrime);
             result.Normalize();
+
             n.Assigne(result);
 
             return ApplyInvTransformationOnNormal(n);
         }
 
+
         public override string ToString()
         {
             return $"======Shape_{Id}======\n" +
-                   $"   Type: Sphere\n" +
+                   $"   Type: Cone\n" +
                    $"   Radius: {Radius}\n" +
+                   $"   Height: {Height}\n" +
                    base.ToString();
         }
+
     }
 }

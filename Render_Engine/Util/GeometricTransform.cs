@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace Render_Engine.Util
 {
@@ -51,7 +46,7 @@ namespace Render_Engine.Util
             InvMatrix = InvMatrix * gt.InvMatrix;
         }
 
-        public static GeometricTransform Translate(float x, float y, float z) => Translate(new Vector3D(-x, y, z));
+        public static GeometricTransform Translate(float x = 0, float y = 0, float z = 0) => Translate(new Vector3D(-x, y, z));
 
         public static GeometricTransform Translate(Vector3D v)
         {
@@ -68,7 +63,7 @@ namespace Render_Engine.Util
             return new GeometricTransform(m, Im);
         }
 
-        public static GeometricTransform Scale(float x, float y, float z) => Scale(new Vector3D(x, y, z));
+        public static GeometricTransform Scale(float x = 1, float y = 1, float z = 1) => Scale(new Vector3D(x, y, z));
 
         public static GeometricTransform Scale(Vector3D v)
         {
