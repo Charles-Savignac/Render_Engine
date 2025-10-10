@@ -8,7 +8,7 @@ namespace Render_Engine.Shapes
     {
         public float Radius { get; set; }
 
-        public Sphere(World w, Util.Point origine, Color color, float radius) : base(w, origine, color)
+        public Sphere(Util.Point o, Color c, float radius) : base(o, c)
         {
             Radius = radius;
             ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, -radius, -radius), new Util.Point(radius, radius, radius));
@@ -18,7 +18,7 @@ namespace Render_Engine.Shapes
         }
 
 
-        protected override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
@@ -58,7 +58,7 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        protected override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 

@@ -8,7 +8,7 @@ namespace Render_Engine.Shapes
     {
         public float Size { get; private set; }
 
-        public Cube(World w, Util.Point center, Color c, float size = 1.0f) : base(w, center, c)
+        public Cube(Util.Point center, Color c, float size = 1.0f) : base(center, c)
         {
             Size = size;
 
@@ -20,7 +20,7 @@ namespace Render_Engine.Shapes
             Surface = 6 * size * size;
         }
 
-        protected override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref float t)
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 
@@ -58,7 +58,7 @@ namespace Render_Engine.Shapes
             return true;
         }
 
-        protected override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, float t)
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 

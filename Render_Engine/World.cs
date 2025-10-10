@@ -9,7 +9,8 @@ namespace Render_Engine
     {
         public ViewPlan View_plan { get; private set; }
         public Color Background_color { get; private set; }
-        public List<Shape> Shapes { get; set; }
+        public List<Shape> Shapes { get; private set; }
+        public RayTracer Tracer { get; private set; }
 
         public World() { }
 
@@ -18,25 +19,42 @@ namespace Render_Engine
             View_plan = new ViewPlan();
             Background_color = Color.Black;
             Shapes = new List<Shape>();
-            AddShapes();
+            Tracer = new RayTracer(this);
+
+            CreateShapes();
         }
 
-        public void AddShapes()
+        private void CreateShapes()
         {
-            Sphere sp1 = new Sphere(this, new Util.Point(), Color.Red, 100);
-            Plan lp1 = new Plan(this, new Util.Point(), Color.Red, 100, 100);
-            Cylinder cy1 = new Cylinder(this, new Util.Point(), Color.Red, 100, -25, 25);
-            Cube cu1 = new Cube(this, new Util.Point(), Color.Red, 100);
-            Cone co1 = new Cone(this, new Util.Point(), Color.Red, 100, 200);
+            Sphere sp1 = new Sphere( new Util.Point(), Color.Red, 100);
+            Sphere sp2 = new Sphere( new Util.Point(), Color.Green, 100);
+            Sphere sp3 = new Sphere( new Util.Point(), Color.Blue, 100);
 
-            cy1.AddTransformation(GeometricTransform.RotateX(85), GeometricTransform.Translate(10, 10 ,10));
 
+
+            Plan lp1 = new Plan( new Util.Point(), Color.Red, 100, 100);
+            Cylinder cy1 = new Cylinder(new Util.Point(), Color.Red, 100, -25, 25);
+            Cube cu1 = new Cube( new Util.Point(), Color.Red, 100);
+            Cone co1 = new Cone( new Util.Point(), Color.Red, 100, 200);
+            Disk di1 = new Disk( new Util.Point(), Color.Red, 50, 100);
+            Triangle tr = new Triangle( new Util.Point(), Color.Red, new Util.Point(-100, -50, 0), new Util.Point(100, -50, 0), new Util.Point(0, 100, 0));
+
+            sp1.AddTransformation(GeometricTransform.Translate(-100));
+            sp3.AddTransformation(GeometricTransform.Translate(100));
+
+
+            cy1.AddTransformation(GeometricTransform.RotateX(85), GeometricTransform.Translate(10, 10, 10));
             cu1.AddTransformation(GeometricTransform.RotateX(45), GeometricTransform.RotateY(45));
+            di1.AddTransformation(GeometricTransform.RotateX(45));
 
-            Shapes.Add(co1);
+            AddShapes(sp1, sp2, sp3);
+        }
 
-            foreach (Shape shape in Shapes)
+        private void AddShapes(params Shape[] s)
+        {
+            foreach (Shape shape in s)
             {
+                Shapes.Add(shape);
                 Console.WriteLine(shape);
             }
         }
@@ -60,11 +78,8 @@ namespace Render_Engine
                     float x = View_plan.Pixel_size * (row - 0.5f * (View_plan.X_res - 1));
                     float y = View_plan.Pixel_size * (colunm - 0.5f * (View_plan.Y_res - 1));
 
-                    foreach (Shape shape in Shapes)
-                    {
-                        ray.Origin = new Util.Point(x, y, distanceCameraViewPlan);
-                        bitmap.SetPixel(row, colunm, shape.TraceRay(ray));
-                    }
+                    ray.Origin = new Util.Point(x, y, distanceCameraViewPlan);
+                    bitmap.SetPixel(row, colunm, Tracer.TraceRay(ray));
                 }
             }
 

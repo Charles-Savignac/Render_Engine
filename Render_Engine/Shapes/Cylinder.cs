@@ -10,7 +10,7 @@ namespace Render_Engine.Shapes
         public float MaxY { get; private set; }
         public float MinY { get; private set; }
 
-        public Cylinder(World w, Util.Point o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(w, o, c)
+        public Cylinder(Util.Point o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(o, c)
         {
             Radius = radius;
             MaxY = maxY;
@@ -22,7 +22,7 @@ namespace Render_Engine.Shapes
             Surface = 2 * MathF.PI * Radius * (MaxY - MinY);
         }
 
-        protected override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
@@ -64,7 +64,7 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        protected override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 

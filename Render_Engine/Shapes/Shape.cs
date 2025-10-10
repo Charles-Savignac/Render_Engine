@@ -7,7 +7,6 @@ namespace Render_Engine.Shapes
     internal abstract class Shape
     {
         public int Id { get; set; }
-        public World Present_world { get; init; }
         public Util.Point Origine { get; set; }
         public Color Shape_color { get; set; }
         public GeometricTransform Transformation { get; protected set; }
@@ -18,35 +17,18 @@ namespace Render_Engine.Shapes
         private static int IdCounter = 0;
 
 
-        public Shape(World world, Util.Point o, Color color)
+        public Shape(Util.Point o, Color color)
         {
             Id = ++IdCounter;
 
-            Present_world = world;
             Origine = o;
             Shape_color = color;
 
             Transformation = new GeometricTransform();
         }
 
-
-        protected abstract bool Intersects(Ray r, ref float t);
-        protected abstract Normal GetNormal(Ray r, float t);
-
-        public Color TraceRay(Ray r)
-        {
-            float t = 0;
-
-            if (Intersects(r, ref t))
-            {
-                Normal n = GetNormal(r, t);
-                float blendScalair = MathF.Abs(r.Direction * n);
-
-                return Blend(blendScalair);
-            }
-
-            return Present_world.Background_color;
-        }
+        public abstract bool Intersects(Ray r, ref float t);
+        public abstract Normal GetNormal(Ray r, float t);
 
         public Color Blend(float scalar)
         {

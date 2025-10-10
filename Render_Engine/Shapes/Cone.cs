@@ -9,7 +9,7 @@ namespace Render_Engine.Shapes
         public float Radius { get; private set; }
         public float Height { get; private set; }
 
-        public Cone(World w, Util.Point p, Color c, float radius = 1.0f, float height = 1.0f) : base(w, p, c)
+        public Cone(Util.Point p, Color c, float radius = 1.0f, float height = 1.0f) : base(p, c)
         {
             Radius = radius;
             Height = height;
@@ -20,7 +20,7 @@ namespace Render_Engine.Shapes
             Surface = MathF.PI * radius * MathF.Sqrt(radius * radius + height * height);
         }
 
-        protected override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
@@ -62,7 +62,7 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        protected override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, float t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
