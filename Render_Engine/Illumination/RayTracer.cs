@@ -1,5 +1,4 @@
-﻿using Render_Engine.Shapes;
-using Render_Engine.Util;
+﻿using Render_Engine.Util;
 using System.Drawing;
 
 

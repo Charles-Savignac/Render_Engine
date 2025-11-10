@@ -1,11 +1,5 @@
-﻿using Render_Engine.Util;
-using Render_Engine.Shapes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Numerics;
+﻿using Render_Engine.Shapes;
+using Render_Engine.Util;
 
 namespace Render_Engine.Acceleration
 {
@@ -30,7 +24,6 @@ namespace Render_Engine.Acceleration
 
         private void GenerateGrid()
         {
-            // 1. Calcul du bounding box englobant
             bool first = true;
             foreach (Shape s in Shapes)
             {
@@ -45,27 +38,22 @@ namespace Render_Engine.Acceleration
                 }
             }
 
-            // 2. Taille totale du volume
             Point diag = ObjectBoundingBox.PMax - ObjectBoundingBox.PMin;
 
-            // Empêche des divisions nulles
             diag.X = Math.Max(diag.X, 1e-4f);
             diag.Y = Math.Max(diag.Y, 1e-4f);
             diag.Z = Math.Max(diag.Z, 1e-4f);
 
-            // 3. Choix du nombre de cellules global
             int nObjects = Math.Max(1, Shapes.Count);
             double cubeRoot = Math.Cbrt(nObjects);
 
-            // Ajuste la résolution selon la taille relative
-            double totalVoxels = 8 * cubeRoot; // un facteur empirique
+            double totalVoxels = 8 * cubeRoot;
             double scale = Math.Pow(totalVoxels / (diag.X * diag.Y * diag.Z), 1.0 / 3.0);
 
             CellCount[0] = Math.Max(1, (int)(diag.X * scale));
             CellCount[1] = Math.Max(1, (int)(diag.Y * scale));
             CellCount[2] = Math.Max(1, (int)(diag.Z * scale));
 
-            // 4. Taille de cellule réelle
             CellSize = new Vector3D(
                 (float)(diag.X / CellCount[0]),
                 (float)(diag.Y / CellCount[1]),
@@ -78,7 +66,6 @@ namespace Render_Engine.Acceleration
                 1.0f / CellSize.Z
             );
 
-            // 5. Création des cellules
             int totalCells = CellCount[0] * CellCount[1] * CellCount[2];
             Cells = new List<Cell>(totalCells);
             for (int i = 0; i < totalCells; i++)

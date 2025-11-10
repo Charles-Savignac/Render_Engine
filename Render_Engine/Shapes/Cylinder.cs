@@ -81,7 +81,7 @@ namespace Render_Engine.Shapes
 
             //return ApplyInvTransformationOnNormal(n);
 
-            return ApplyInvTransformationOnNormal(new Normal(0,1,0));
+            return ApplyInvTransformationOnNormal(new Normal(0, 1, 0));
         }
 
         public override string ToString()
