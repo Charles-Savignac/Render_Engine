@@ -68,8 +68,8 @@ namespace Render_Engine.Shapes
                 r.Origin.Z + t * r.Direction.Z);
 
             // Get cube boundaries in object space
-            var min = new Util.Point(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
-            var max = new Util.Point(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
+            Util.Point min = new Util.Point(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
+            Util.Point max = new Util.Point(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
 
             // Choose normal based on which face the intersection is closest to
             const float epsilon = 1e-4f; // much larger than float.Epsilon
@@ -87,6 +87,7 @@ namespace Render_Engine.Shapes
                 n = new Normal(0, 0, -1); // Back
             else if (Math.Abs(intersectionPoint.Z - max.Z) < epsilon)
                 n = new Normal(0, 0, 1);  // Front
+
             else
             {
                 // Fallback (rare): pick the axis with largest absolute coordinate difference

@@ -95,22 +95,21 @@ namespace Render_Engine.Acceleration
             b = temp;
         }
 
-        public BoundingBox Combine(BoundingBox box)
+        public void Combine(BoundingBox box)
         {
-            Point newMin = new Point(
+            PMin = new Point(
                 Math.Min(PMin.X, box.PMin.X),
                 Math.Min(PMin.Y, box.PMin.Y),
                 Math.Min(PMin.Z, box.PMin.Z)
             );
 
-            Point newMax = new Point(
+            PMax = new Point(
                 Math.Max(PMax.X, box.PMax.X),
                 Math.Max(PMax.Y, box.PMax.Y),
                 Math.Max(PMax.Z, box.PMax.Z)
             );
-
-            return new BoundingBox(newMin, newMax);
         }
+
 
         public void SetPMin(Point p) => PMin = p;
 

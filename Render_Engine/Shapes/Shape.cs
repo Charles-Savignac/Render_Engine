@@ -2,6 +2,7 @@
 using Render_Engine.Util;
 using System.Drawing;
 
+
 namespace Render_Engine.Shapes
 {
     internal abstract class Shape
@@ -44,8 +45,8 @@ namespace Render_Engine.Shapes
             foreach (GeometricTransform gt in transformations)
                 Transformation.Multiply(gt);
 
-            WorldBoundingBox.SetPMin(ApplyTransformationOnPoint(ObjectBoundingBox.PMin));
-            WorldBoundingBox.SetPMax(ApplyTransformationOnPoint(ObjectBoundingBox.PMax));
+            WorldBoundingBox.SetPMin(ApplyInvTransformationOnPoint(ObjectBoundingBox.PMin));
+            WorldBoundingBox.SetPMax(ApplyInvTransformationOnPoint(ObjectBoundingBox.PMax));
         }
 
         public Vector3D ApplyTransformationOnVector(Vector3D v)

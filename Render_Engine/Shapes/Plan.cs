@@ -14,7 +14,7 @@ namespace Render_Engine.Shapes
         {
             Witdh = witdh;
             Depth = depth;
-            Normal = new Normal(0 , 1, 0);
+            Normal = new Normal(0, 1, 0);
 
             ObjectBoundingBox = new BoundingBox(new Util.Point(-witdh / 2, 0, depth / 2), new Util.Point(witdh / 2, 0, -depth / 2));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);

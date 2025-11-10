@@ -66,20 +66,22 @@ namespace Render_Engine.Shapes
 
         public override Normal GetNormal(Ray worldRay, float t)
         {
-            Ray r = ApplyTransformationOnRay(worldRay);
+            //Ray r = ApplyTransformationOnRay(worldRay);
 
-            Normal n = new Normal();
-            VectorClass result;
-            float z = r.Origin.Z + t * r.Direction.Z;
+            //Normal n = new Normal();
+            //VectorClass result;
+            //float z = r.Origin.Z + t * r.Direction.Z;
 
-            Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * (r.Origin.X));
-            Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
+            //Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * (r.Origin.X));
+            //Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
 
-            result = uPrime.CrossProduct(VPrime);
-            result.Normalize();
-            n.Assigne(result);
+            //result = uPrime.CrossProduct(VPrime);
+            //result.Normalize();
+            //n.Assigne(result);
 
-            return ApplyInvTransformationOnNormal(n);
+            //return ApplyInvTransformationOnNormal(n);
+
+            return ApplyInvTransformationOnNormal(new Normal(0,1,0));
         }
 
         public override string ToString()
