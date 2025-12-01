@@ -70,6 +70,15 @@
             Z /= norm;
         }
 
+        public static Vector3D Cross(VectorClass v1, VectorClass v2)
+        {
+            float crossX = v1.Y * v2.Z - v1.Z * v2.Y;
+            float crossY = v1.Z * v2.X - v1.X * v2.Z;
+            float crossZ = v1.X * v2.Y - v1.Y * v2.X;
+
+            return new Vector3D(crossX, crossY, crossZ);
+        }
+
         /// <summary>
         /// Computes the cross product with another 3D vector.
         /// </summary>

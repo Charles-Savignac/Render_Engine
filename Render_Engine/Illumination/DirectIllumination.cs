@@ -14,40 +14,28 @@ namespace Render_Engine.Illumination
             Intersection inter = new Intersection();
             inter.Ray = shadowRay;
 
-            // Use the grid accelerator to find intersections
             if (!PresentWorld.AccelerationTec.Intersects(ref inter))
                 return false;
 
-            // Don't shadow against the shape we are shading
             if (inter.HitShape == current)
                 return false;
 
-            // Hit something before reaching the light?
             return inter.t < maxDistance;
         }
 
-
-        private Color Blend(Color c1, Color c2)
-        {
-            int r = Math.Min(255, c1.R + c2.R);
-            int g = Math.Min(255, c1.G + c2.G);
-            int b = Math.Min(255, c1.B + c2.B);
-            return Color.FromArgb(r, g, b);
-        }
-
-        public override Color TraceRay(Ray r)
+        public override Color TraceRay(Ray ray)
         {
             Color pixelColor = PresentWorld.Background_color;
 
             Intersection inter = new Intersection();
-            inter.Ray = r;
+            inter.Ray = ray;
 
             if (!PresentWorld.AccelerationTec.Intersects(ref inter))
                 return pixelColor;
 
-            inter.HitPoint = r.Origin + inter.t * r.Direction;
+            inter.HitPoint = ray.Origin + inter.t * ray.Direction;
 
-            inter.Normal = inter.HitShape.GetNormal(r, inter.t);
+            inter.Normal = inter.HitShape.GetNormal(ray, inter.t);
             inter.Normal.Normalize();
 
             Color objectColor = inter.HitShape.ShapeColor;
@@ -72,13 +60,19 @@ namespace Render_Engine.Illumination
 
                     Color lightColor = light.GetRadiance();
 
-                    Color diffuse = Color.FromArgb(
-                        (int)(objectColor.R * lightColor.R * NdL / 255f),
-                        (int)(objectColor.G * lightColor.G * NdL / 255f),
-                        (int)(objectColor.B * lightColor.B * NdL / 255f)
-                    );
+                    float r = pixelColor.R;
+                    float g = pixelColor.G;
+                    float b = pixelColor.B;
 
-                    pixelColor = Blend(pixelColor, diffuse);
+                    r += objectColor.R * lightColor.R * NdL / 255f;
+                    g += objectColor.G * lightColor.G * NdL / 255f;
+                    b += objectColor.B * lightColor.B * NdL / 255f;
+
+                    r = Math.Min(255f, r);
+                    g = Math.Min(255f, g);
+                    b = Math.Min(255f, b);
+
+                    pixelColor = Color.FromArgb((int)r, (int)g, (int)b);
                 }
             }
 
