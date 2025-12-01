@@ -9,12 +9,12 @@ namespace Render_Engine.Shapes
         public float Radius { get; private set; }
         public float Height { get; private set; }
 
-        public Cone(Util.Point p, Color c, float radius = 1.0f, float height = 1.0f) : base(p, c)
+        public Cone(Util.Point3D p, Color c, float radius = 1.0f, float height = 1.0f) : base(p, c)
         {
             Radius = radius;
             Height = height;
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, 0, -radius), new Util.Point(radius, height, radius));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, 0, -radius), new Util.Point3D(radius, height, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = MathF.PI * radius * MathF.Sqrt(radius * radius + height * height);

@@ -1,34 +1,43 @@
-﻿using Render_Engine.Util;
+﻿using Render_Engine.Shapes;
+using Render_Engine.Util;
 using System.Drawing;
 
 
 namespace Render_Engine.Illumination
 {
-    internal class RayTracer
+    abstract class RayTracer
     {
-        public World Present_World { get; init; }
+        public World PresentWorld { get; init; }
+        public List<Shape> Shapes { get; private set; }
+        public List<Light> Lights { get; private set; }
+
+
 
         public RayTracer(World w)
         {
-            Present_World = w;
+            PresentWorld = w;
+            Shapes = new List<Shape>();
+            Lights = new List<Light>();
         }
 
-        public Color TraceRay(Ray r)
+        public void AddShapes(params Shape[] s)
         {
-            Color pixelColor = Present_World.Background_color;
-            Intersection intersection = new Intersection();
-
-            intersection.Ray = r;
-
-            if (Present_World.AccelerationTec.Intersects(ref intersection))
+            foreach (Shape shape in s)
             {
-                intersection.Normal = intersection.HitShape.GetNormal(r, intersection.t);
-                float blendScalair = MathF.Abs(r.Direction * intersection.Normal);
-
-                pixelColor = intersection.HitShape.Blend(blendScalair);
+                Shapes.Add(shape);
+                Console.WriteLine(shape);
             }
-            return pixelColor;
+        }
+        public void AddLightSource(params Light[] l)
+        {
+            foreach (Light light in l)
+            {
+                Lights.Add(light);
+                
+                //Console.WriteLine(light);
+            }
         }
 
+        public abstract Color TraceRay(Ray r);
     }
 }

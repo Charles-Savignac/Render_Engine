@@ -21,9 +21,9 @@
         public Vector3D(float x, float y, float z) : base(x, y, z) { }
 
         /// <summary>
-        /// Creates a 3D vector from a <see cref="Point"/> object.
+        /// Creates a 3D vector from a <see cref="Point3D"/> object.
         /// </summary>
         /// <param name="p">A point containing X, Y, and Z values.</param>
-        public Vector3D(Point p) : base(p.X, p.Y, p.Z) { }
+        public Vector3D(Point3D p) : base(p.X, p.Y, p.Z) { }
     }
 }

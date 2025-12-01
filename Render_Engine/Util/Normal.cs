@@ -21,10 +21,13 @@
         public Normal(float x, float y, float z) : base(x, y, z) { }
 
         /// <summary>
-        /// Creates a normal vector from a <see cref="Point"/> object.
+        /// Creates a normal vector from a <see cref="Point3D"/> object.
         /// </summary>
         /// <param name="p">A point containing X, Y, and Z values.</param>
-        public Normal(Point p) : base(p.X, p.Y, p.Z) { }
+        public Normal(Point3D p) : base(p.X, p.Y, p.Z) { }
+
+        public Normal(Vector3D v) : base(v.X, v.Y, v.Z) { }
+
 
         public void Assigne(VectorClass v)
         {

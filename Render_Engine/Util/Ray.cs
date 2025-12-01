@@ -6,7 +6,7 @@
     /// </summary>
     internal class Ray
     {
-        public Point Origin { get; set; }
+        public Point3D Origin { get; set; }
         public Vector3D Direction { get; set; }
         public float? T_min { get; set; }
         public float? T_max { get; set; }
@@ -20,7 +20,7 @@
         /// </summary>
         public Ray()
         {
-            Origin = new Point();
+            Origin = new Point3D();
             Direction = new Vector3D();
 
             T_min = null;
@@ -46,7 +46,7 @@
         /// <param name="min">Minimum valid intersection parameter.</param>
         /// <param name="max">Maximum valid intersection parameter.</param>
         /// <param name="depth">Recursion depth (e.g., for reflections).</param>
-        public Ray(Point p, Vector3D d, float min, float max, int depth)
+        public Ray(Point3D p, Vector3D d, float min, float max, int depth)
         {
             Origin = p;
             Direction = d;

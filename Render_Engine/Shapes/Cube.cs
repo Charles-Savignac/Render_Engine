@@ -8,13 +8,13 @@ namespace Render_Engine.Shapes
     {
         public float Size { get; private set; }
 
-        public Cube(Util.Point center, Color c, float size = 1.0f) : base(center, c)
+        public Cube(Util.Point3D center, Color c, float size = 1.0f) : base(center, c)
         {
             Size = size;
 
             ObjectBoundingBox = new BoundingBox(
-                new Util.Point(-size / 2, -size / 2, -size / 2),
-                new Util.Point(size / 2, size / 2, size / 2));
+                new Util.Point3D(-size / 2, -size / 2, -size / 2),
+                new Util.Point3D(size / 2, size / 2, size / 2));
             WorldBoundingBox = ObjectBoundingBox;
 
             Surface = 6 * size * size;
@@ -24,8 +24,8 @@ namespace Render_Engine.Shapes
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 
-            var min = new Util.Point(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
-            var max = new Util.Point(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
+            var min = new Util.Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
+            var max = new Util.Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
 
             float tMin = (min.X - r.Origin.X) / r.Direction.X;
             float tMax = (max.X - r.Origin.X) / r.Direction.X;
@@ -62,14 +62,14 @@ namespace Render_Engine.Shapes
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 
-            var intersectionPoint = new Util.Point(
+            var intersectionPoint = new Util.Point3D(
                 r.Origin.X + t * r.Direction.X,
                 r.Origin.Y + t * r.Direction.Y,
                 r.Origin.Z + t * r.Direction.Z);
 
             // Get cube boundaries in object space
-            Util.Point min = new Util.Point(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
-            Util.Point max = new Util.Point(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
+            Util.Point3D min = new Util.Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
+            Util.Point3D max = new Util.Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
 
             // Choose normal based on which face the intersection is closest to
             const float epsilon = 1e-4f; // much larger than float.Epsilon

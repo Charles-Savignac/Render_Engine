@@ -15,7 +15,7 @@ namespace Render_Engine
             world.Build();
             bitmap = world.RenderScene();
 
-            bitmap.Save(fileName, ImageFormat.Png);
+            bitmap.Save("Output/" + fileName, ImageFormat.Png);
         }
     }
 }

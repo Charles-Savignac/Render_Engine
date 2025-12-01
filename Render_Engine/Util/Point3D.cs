@@ -4,7 +4,7 @@
     /// Represents a point in 3D space with X, Y, and Z coordinates.
     /// Supports basic operations such as distance computation and conversion to vectors.
     /// </summary>
-    internal class Point
+    internal class Point3D
     {
         public float X { get; set; }
         public float Y { get; set; }
@@ -14,7 +14,7 @@
         /// Default constructor.
         /// Creates a point at the origin (0, 0, 0).
         /// </summary>
-        public Point()
+        public Point3D()
         {
             X = 0;
             Y = 0;
@@ -27,11 +27,18 @@
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="z">Z coordinate.</param>
-        public Point(float x, float y, float z)
+        public Point3D(float x, float y, float z)
         {
             X = x;
             Y = y;
             Z = z;
+        }
+
+        public Point3D(Point3D p)
+        {
+            X = p.X;
+            Y = p.Y;
+            Z = p.Z;
         }
 
         /// <summary>
@@ -60,7 +67,7 @@
         /// <param name="p1">First point.</param>
         /// <param name="p2">Second point.</param>
         /// <returns>Distance between <paramref name="p1"/> and <paramref name="p2"/>.</returns>
-        public static float distance(Point p1, Point p2) => (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2) + Math.Pow(p1.Z - p2.Z, 2));
+        public static float distance(Point3D p1, Point3D p2) => (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2) + Math.Pow(p1.Z - p2.Z, 2));
 
         /// <summary>
         /// Converts this point to a <see cref="Vector3D"/>.
@@ -70,15 +77,15 @@
 
         public override string ToString() => $"({X}, {Y}, {Z})";
 
-        public static Point operator +(Point a, Point b) => new Point(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-        public static Point operator +(Point p, VectorClass v) => new Point(p.X + v.X, p.Y + v.Y, p.Z + v.Z);
-        public static Point operator +(VectorClass v, Point p) => p + v;
-        public static Point operator -(Point a, Point b) => new Point(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-        public static Point operator *(float scalair, Point p) => new Point(p.X * scalair, p.Y * scalair, p.Z * scalair);
-        public static Point operator *(Point p, float scalair) => scalair * p;
-        public static Point operator /(Point p, float scalair) => 1 / scalair * p;
+        public static Point3D operator +(Point3D a, Point3D b) => new Point3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        public static Point3D operator +(Point3D p, VectorClass v) => new Point3D(p.X + v.X, p.Y + v.Y, p.Z + v.Z);
+        public static Point3D operator +(VectorClass v, Point3D p) => p + v;
+        public static Vector3D operator -(Point3D a, Point3D b) => new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        public static Point3D operator *(float scalair, Point3D p) => new Point3D(p.X * scalair, p.Y * scalair, p.Z * scalair);
+        public static Point3D operator *(Point3D p, float scalair) => scalair * p;
+        public static Point3D operator /(Point3D p, float scalair) => 1 / scalair * p;
 
-        public static bool operator ==(Point a, Point b) => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-        public static bool operator !=(Point a, Point b) => !(a == b);
+        public static bool operator ==(Point3D a, Point3D b) => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+        public static bool operator !=(Point3D a, Point3D b) => !(a == b);
     }
 }

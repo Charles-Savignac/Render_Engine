@@ -10,13 +10,13 @@ namespace Render_Engine.Shapes
         public float Depth { get; private set; }
         public Normal Normal { get; set; }
 
-        public Plan(Util.Point o, Color c, float witdh = 1.0f, float depth = 1.0f) : base(o, c)
+        public Plan(Util.Point3D o, Color c, float witdh = 1.0f, float depth = 1.0f) : base(o, c)
         {
             Witdh = witdh;
             Depth = depth;
             Normal = new Normal(0, 1, 0);
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-witdh / 2, 0, depth / 2), new Util.Point(witdh / 2, 0, -depth / 2));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-witdh / 2, 0, depth / 2), new Util.Point3D(witdh / 2, 0, -depth / 2));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
 

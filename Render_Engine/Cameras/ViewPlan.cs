@@ -1,4 +1,4 @@
-﻿namespace Render_Engine
+﻿namespace Render_Engine.Cameras
 {
     internal class ViewPlan
     {
@@ -19,7 +19,7 @@
             Gamma = 1;
         }
 
-        public ViewPlan(int xres, int yres, float pixelsize, float gamma)
+        public ViewPlan(int xres, int yres, float pixelsize = 1, float gamma = 1)
         {
             X_res = xres;
             Y_res = yres;

@@ -10,13 +10,13 @@ namespace Render_Engine.Shapes
         public float MaxY { get; private set; }
         public float MinY { get; private set; }
 
-        public Cylinder(Util.Point o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(o, c)
+        public Cylinder(Util.Point3D o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(o, c)
         {
             Radius = radius;
             MaxY = maxY;
             MinY = minY;
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, minY, -radius), new Util.Point(radius, maxY, radius));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, minY, -radius), new Util.Point3D(radius, maxY, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = 2 * MathF.PI * Radius * (MaxY - MinY);

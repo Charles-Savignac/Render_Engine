@@ -38,7 +38,7 @@ namespace Render_Engine.Acceleration
                 }
             }
 
-            Point diag = ObjectBoundingBox.PMax - ObjectBoundingBox.PMin;
+            Vector3D diag = ObjectBoundingBox.PMax - ObjectBoundingBox.PMin;
 
             diag.X = Math.Max(diag.X, 1e-4f);
             diag.Y = Math.Max(diag.Y, 1e-4f);
@@ -94,7 +94,7 @@ namespace Render_Engine.Acceleration
             }
         }
 
-        private int SpaceToCell(Point a_p, int axis)
+        private int SpaceToCell(Point3D a_p, int axis)
         {
             int v = 0;
             switch (axis)
@@ -122,7 +122,7 @@ namespace Render_Engine.Acceleration
         public override bool Intersects(ref Intersection inter)
         {
             // Ray info
-            Point origin = inter.Ray.Origin;
+            Point3D origin = inter.Ray.Origin;
             Vector3D dir = inter.Ray.Direction;
 
             // Convert origin to starting cell indices

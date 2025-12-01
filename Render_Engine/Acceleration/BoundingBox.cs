@@ -4,22 +4,22 @@ namespace Render_Engine.Acceleration
 {
     internal class BoundingBox
     {
-        public Point PMax { get; private set; }
-        public Point PMin { get; private set; }
+        public Point3D PMax { get; private set; }
+        public Point3D PMin { get; private set; }
 
         public BoundingBox()
         {
-            PMax = new Point(-100, -100, -100);
-            PMin = new Point(100, 100, 100);
+            PMax = new Point3D(-100, -100, -100);
+            PMin = new Point3D(100, 100, 100);
         }
 
-        public BoundingBox(Point p)
+        public BoundingBox(Point3D p)
         {
             PMin = p;
             PMax = p;
         }
 
-        public BoundingBox(Point min, Point max)
+        public BoundingBox(Point3D min, Point3D max)
         {
             PMin = min;
             PMax = max;
@@ -47,7 +47,7 @@ namespace Render_Engine.Acceleration
                    PMin.Z <= box.PMax.Z && PMax.Z >= box.PMin.Z;
         }
 
-        public bool Contains(Point p)
+        public bool Contains(Point3D p)
         {
             return p.X >= PMin.X && p.X <= PMax.X &&
                    p.Y >= PMin.Y && p.Y <= PMax.Y &&
@@ -97,13 +97,13 @@ namespace Render_Engine.Acceleration
 
         public void Combine(BoundingBox box)
         {
-            PMin = new Point(
+            PMin = new Point3D(
                 Math.Min(PMin.X, box.PMin.X),
                 Math.Min(PMin.Y, box.PMin.Y),
                 Math.Min(PMin.Z, box.PMin.Z)
             );
 
-            PMax = new Point(
+            PMax = new Point3D(
                 Math.Max(PMax.X, box.PMax.X),
                 Math.Max(PMax.Y, box.PMax.Y),
                 Math.Max(PMax.Z, box.PMax.Z)
@@ -111,9 +111,9 @@ namespace Render_Engine.Acceleration
         }
 
 
-        public void SetPMin(Point p) => PMin = p;
+        public void SetPMin(Point3D p) => PMin = p;
 
-        public void SetPMax(Point p) => PMax = p;
+        public void SetPMax(Point3D p) => PMax = p;
 
         public override string ToString() => $"Pmin: ({PMin.X}, {PMin.Y}, {PMin.Z}) Pmax: ({PMax.X}, {PMax.Y}, {PMax.Z})";
     }

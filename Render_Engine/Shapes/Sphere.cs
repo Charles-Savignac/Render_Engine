@@ -8,10 +8,10 @@ namespace Render_Engine.Shapes
     {
         public float Radius { get; set; }
 
-        public Sphere(Util.Point o, Color c, float radius) : base(o, c)
+        public Sphere(Util.Point3D o, Color c, float radius) : base(o, c)
         {
             Radius = radius;
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radius, -radius, -radius), new Util.Point(radius, radius, radius));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, -radius, -radius), new Util.Point3D(radius, radius, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = 4 * MathF.PI * Radius * Radius;
@@ -60,28 +60,18 @@ namespace Render_Engine.Shapes
 
         public override Normal GetNormal(Ray worldRay, float t)
         {
-            Ray r = ApplyTransformationOnRay(worldRay);
+            // Step 1: Transform ray into object space
+            Ray objectRay = ApplyTransformationOnRay(worldRay);
 
-            Normal n = new Normal();
-            VectorClass result;
+            // Step 2: Compute hit point in object space
+            Point3D objectHit = objectRay.Origin + t * objectRay.Direction;
 
-            float z = r.Origin.Z + t * r.Direction.Z;
-            float theta = MathF.Acos(r.Origin.Y / Radius);
+            // Step 3: Normal in object space = hit point (sphere is centered at origin)
+            Vector3D localNormal = new Vector3D(objectHit);
+            localNormal.Normalize();
 
-            float rsinTheta = MathF.Sqrt(MathF.Pow(r.Origin.X, 2) + MathF.Pow(z, 2));
-            float cosFi = z / (Radius * MathF.Sin(theta));
-            float sinFi = r.Origin.X / (Radius * MathF.Sin(theta));
-
-            Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * r.Origin.X);
-            Vector3D vPrime = new Vector3D(r.Origin.Y * sinFi, -rsinTheta, r.Origin.Y * cosFi);
-
-            vPrime = (Vector3D)(vPrime * MathF.PI);
-
-            result = uPrime.CrossProduct(vPrime);
-            result.Normalize();
-            n.Assigne(result);
-
-            return ApplyInvTransformationOnNormal(n);
+            // Step 4: Transform normal back to world space
+            return ApplyInvTransformationOnNormal(new Normal(localNormal));
         }
 
         public override string ToString()

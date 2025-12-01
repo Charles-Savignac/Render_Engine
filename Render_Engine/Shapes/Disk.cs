@@ -10,13 +10,13 @@ namespace Render_Engine.Shapes
         public float RadiusOut { get; private set; }
         public Normal Normal { get; init; }
 
-        public Disk(Util.Point p, Color c, float radiusIn, float radiusOut) : base(p, c)
+        public Disk(Util.Point3D p, Color c, float radiusIn, float radiusOut) : base(p, c)
         {
             RadiusIn = radiusIn;
             RadiusOut = radiusOut;
             Normal = new Normal(0, 1, 0);
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point(-radiusOut, 0, -radiusOut), new Util.Point(radiusOut, 0, radiusOut));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radiusOut, 0, -radiusOut), new Util.Point3D(radiusOut, 0, radiusOut));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = MathF.PI * (radiusOut * radiusOut - radiusIn * radiusIn);
@@ -28,12 +28,12 @@ namespace Render_Engine.Shapes
 
             if (ObjectBoundingBox.Intersects(r))
             {
-                Util.Point intersectionPoint;
+                Util.Point3D intersectionPoint;
                 float distanceSquared;
 
                 t = -r.Origin.Y / r.Direction.Y;
 
-                intersectionPoint = new Util.Point(r.Origin.X + t * r.Direction.X, 0, r.Origin.Z + t * r.Direction.Z);
+                intersectionPoint = new Util.Point3D(r.Origin.X + t * r.Direction.X, 0, r.Origin.Z + t * r.Direction.Z);
                 distanceSquared = MathF.Pow(intersectionPoint.X, 2) + MathF.Pow(intersectionPoint.Z, 2);
 
                 if (distanceSquared >= MathF.Pow(RadiusIn, 2) && distanceSquared <= MathF.Pow(RadiusOut, 2))

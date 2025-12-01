@@ -8,8 +8,8 @@ namespace Render_Engine.Shapes
     internal abstract class Shape
     {
         public int Id { get; set; }
-        public Util.Point Origine { get; set; }
-        public Color Shape_color { get; set; }
+        public Util.Point3D Origine { get; set; }
+        public Color ShapeColor { get; set; }
         public GeometricTransform Transformation { get; protected set; }
         public BoundingBox ObjectBoundingBox { get; protected set; }
         public BoundingBox WorldBoundingBox { get; protected set; }
@@ -18,12 +18,12 @@ namespace Render_Engine.Shapes
         private static int IdCounter = 0;
 
 
-        public Shape(Util.Point o, Color color)
+        public Shape(Util.Point3D o, Color color)
         {
             Id = ++IdCounter;
 
             Origine = o;
-            Shape_color = color;
+            ShapeColor = color;
 
             Transformation = new GeometricTransform();
         }
@@ -33,9 +33,9 @@ namespace Render_Engine.Shapes
 
         public Color Blend(float scalar)
         {
-            int r = (int)Math.Clamp(Shape_color.R * scalar, 0, 255);
-            int g = (int)Math.Clamp(Shape_color.G * scalar, 0, 255);
-            int b = (int)Math.Clamp(Shape_color.B * scalar, 0, 255);
+            int r = (int)Math.Clamp(ShapeColor.R * scalar, 0, 255);
+            int g = (int)Math.Clamp(ShapeColor.G * scalar, 0, 255);
+            int b = (int)Math.Clamp(ShapeColor.B * scalar, 0, 255);
 
             return Color.FromArgb(r, g, b);
         }
@@ -45,9 +45,38 @@ namespace Render_Engine.Shapes
             foreach (GeometricTransform gt in transformations)
                 Transformation.Multiply(gt);
 
-            WorldBoundingBox.SetPMin(ApplyInvTransformationOnPoint(ObjectBoundingBox.PMin));
-            WorldBoundingBox.SetPMax(ApplyInvTransformationOnPoint(ObjectBoundingBox.PMax));
+            Point3D pMin = new Point3D(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            Point3D pMax = new Point3D(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+
+            Point3D[] corners =
+            {
+                new Point3D(ObjectBoundingBox.PMin.X, ObjectBoundingBox.PMin.Y, ObjectBoundingBox.PMin.Z),
+                new Point3D(ObjectBoundingBox.PMin.X, ObjectBoundingBox.PMin.Y, ObjectBoundingBox.PMax.Z),
+                new Point3D(ObjectBoundingBox.PMin.X, ObjectBoundingBox.PMax.Y, ObjectBoundingBox.PMin.Z),
+                new Point3D(ObjectBoundingBox.PMin.X, ObjectBoundingBox.PMax.Y, ObjectBoundingBox.PMax.Z),
+                new Point3D(ObjectBoundingBox.PMax.X, ObjectBoundingBox.PMin.Y, ObjectBoundingBox.PMin.Z),
+                new Point3D(ObjectBoundingBox.PMax.X, ObjectBoundingBox.PMin.Y, ObjectBoundingBox.PMax.Z),
+                new Point3D(ObjectBoundingBox.PMax.X, ObjectBoundingBox.PMax.Y, ObjectBoundingBox.PMin.Z),
+                new Point3D(ObjectBoundingBox.PMax.X, ObjectBoundingBox.PMax.Y, ObjectBoundingBox.PMax.Z)
+            };
+
+            foreach (var corner in corners)
+            {
+                Point3D t = ApplyTransformationOnPoint(corner);
+
+                pMin.X = Math.Min(pMin.X, t.X);
+                pMin.Y = Math.Min(pMin.Y, t.Y);
+                pMin.Z = Math.Min(pMin.Z, t.Z);
+
+                pMax.X = Math.Max(pMax.X, t.X);
+                pMax.Y = Math.Max(pMax.Y, t.Y);
+                pMax.Z = Math.Max(pMax.Z, t.Z);
+            }
+
+            WorldBoundingBox.SetPMin(pMin);
+            WorldBoundingBox.SetPMax(pMax);
         }
+
 
         public Vector3D ApplyTransformationOnVector(Vector3D v)
         {
@@ -65,17 +94,17 @@ namespace Render_Engine.Shapes
             Transformation.InvMatrix.M31 * v.X + Transformation.InvMatrix.M32 * v.Y + Transformation.InvMatrix.M33 * v.Z);
         }
 
-        public Util.Point ApplyTransformationOnPoint(Util.Point p)
+        public Util.Point3D ApplyTransformationOnPoint(Util.Point3D p)
         {
-            return new Util.Point(
+            return new Util.Point3D(
             Transformation.MatrixP.M11 * p.X + Transformation.MatrixP.M12 * p.Y + Transformation.MatrixP.M13 * p.Z + Transformation.MatrixP.M14,
             Transformation.MatrixP.M21 * p.X + Transformation.MatrixP.M22 * p.Y + Transformation.MatrixP.M23 * p.Z + Transformation.MatrixP.M24,
             Transformation.MatrixP.M31 * p.X + Transformation.MatrixP.M32 * p.Y + Transformation.MatrixP.M33 * p.Z + Transformation.MatrixP.M34);
         }
 
-        public Util.Point ApplyInvTransformationOnPoint(Util.Point p)
+        public Util.Point3D ApplyInvTransformationOnPoint(Util.Point3D p)
         {
-            return new Util.Point(
+            return new Util.Point3D(
             Transformation.InvMatrix.M11 * p.X + Transformation.InvMatrix.M12 * p.Y + Transformation.InvMatrix.M13 * p.Z + Transformation.InvMatrix.M14,
             Transformation.InvMatrix.M21 * p.X + Transformation.InvMatrix.M22 * p.Y + Transformation.InvMatrix.M23 * p.Z + Transformation.InvMatrix.M24,
             Transformation.InvMatrix.M31 * p.X + Transformation.InvMatrix.M32 * p.Y + Transformation.InvMatrix.M33 * p.Z + Transformation.InvMatrix.M34);
@@ -122,7 +151,7 @@ namespace Render_Engine.Shapes
 
         public override string ToString()
         {
-            return $"   Color: {Shape_color.Name}\n" +
+            return $"   Color: {ShapeColor.Name}\n" +
                    $"   Center: {ApplyTransformationOnPoint(Origine)}\n" +
                    $"   Transformation Matrix: {Transformation}\n\n" +
                    $"   Bounding Box: {WorldBoundingBox}\n";

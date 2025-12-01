@@ -6,19 +6,19 @@ namespace Render_Engine.Shapes
 {
     internal class Triangle : Shape
     {
-        public Util.Point PointA { get; private set; }
-        public Util.Point PointB { get; private set; }
-        public Util.Point PointC { get; private set; }
+        public Util.Point3D PointA { get; private set; }
+        public Util.Point3D PointB { get; private set; }
+        public Util.Point3D PointC { get; private set; }
         public Normal Normal { get; set; }
 
-        public Triangle(Util.Point o, Color c, Util.Point a, Util.Point b, Util.Point pointc) : base(o, c)
+        public Triangle(Util.Point3D o, Color c, Util.Point3D a, Util.Point3D b, Util.Point3D pointc) : base(o, c)
         {
             PointA = a;
             PointB = b;
             PointC = pointc;
 
-            Vector3D edge1 = new Vector3D(PointB - PointA);
-            Vector3D edge2 = new Vector3D(PointC - PointA);
+            Vector3D edge1 = PointB - PointA;
+            Vector3D edge2 = PointC - PointA;
 
             Normal = new Normal();
             Normal.Assigne(edge1.CrossProduct(edge2));
@@ -26,8 +26,8 @@ namespace Render_Engine.Shapes
 
             CalculateBoundingBox();
 
-            Vector3D p1 = new Vector3D(PointB - PointA);
-            Vector3D p2 = new Vector3D(PointC - PointA);
+            Vector3D p1 = PointB - PointA;
+            Vector3D p2 = PointC - PointA;
 
             Surface = 1 / 2 * (p1.CrossProduct(p2).Norm());
         }
@@ -42,7 +42,7 @@ namespace Render_Engine.Shapes
             float maxY = Math.Max(PointA.Y, Math.Max(PointB.Y, PointC.Y));
             float maxZ = Math.Max(PointA.Z, Math.Max(PointB.Z, PointC.Z));
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point(minX, minY, minZ), new Util.Point(maxX, maxY, maxZ));
+            ObjectBoundingBox = new BoundingBox(new Util.Point3D(minX, minY, minZ), new Util.Point3D(maxX, maxY, maxZ));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
         }
 
@@ -51,11 +51,11 @@ namespace Render_Engine.Shapes
             Ray r = ApplyTransformationOnRay(worldRay);
             if (ObjectBoundingBox.Intersects(r))
             {
-                Vector3D edge1 = new Vector3D(PointB - PointA);
-                Vector3D edge2 = new Vector3D(PointC - PointA);
+                Vector3D edge1 = PointB - PointA;
+                Vector3D edge2 = PointC - PointA;
 
                 VectorClass h = r.Direction.CrossProduct(edge2);
-                Vector3D s = new Vector3D(r.Origin - PointA);
+                Vector3D s = r.Origin - PointA;
                 VectorClass q = s.CrossProduct(edge1);
 
                 float a = edge1.Dot(h);

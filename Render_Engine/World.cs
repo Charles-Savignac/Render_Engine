@@ -1,7 +1,9 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Cameras;
 using Render_Engine.Illumination;
 using Render_Engine.Shapes;
 using Render_Engine.Util;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -14,7 +16,6 @@ namespace Render_Engine
     {
         public ViewPlan View_plan { get; private set; }
         public Color Background_color { get; private set; }
-        public List<Shape> Shapes { get; private set; }
         public RayTracer Tracer { get; private set; }
         public Accelerator AccelerationTec { get; set; }
 
@@ -22,50 +23,44 @@ namespace Render_Engine
 
         public void Build()
         {
-            View_plan = new ViewPlan();
+            View_plan = new ViewPlan(1080, 720);
             Background_color = Color.Black;
-            Shapes = new List<Shape>();
-            Tracer = new RayTracer(this);
+            Tracer = new DirectIllumination(this);
             CreateShapes();
+            CreateLightSources();
 
-            AccelerationTec = new GridAccelerator(Shapes);
+            AccelerationTec = new GridAccelerator(Tracer.Shapes);
         }
 
         private void CreateShapes()
         {
-            Sphere sp1 = new Sphere(new Util.Point(), Color.Red, 100);
-            Sphere sp2 = new Sphere(new Util.Point(), Color.Green, 100);
-            Sphere sp3 = new Sphere(new Util.Point(), Color.Blue, 100);
+            Sphere sp1 = new Sphere(new Point3D(), Color.Red, 100);
+            Sphere sp2 = new Sphere(new Point3D(), Color.Green, 100);
+            Sphere sp3 = new Sphere(new Point3D(), Color.Blue, 100);
 
 
 
-            Plan lp1 = new Plan(new Util.Point(), Color.Red, 100, 100);
-            Cylinder cy1 = new Cylinder(new Util.Point(), Color.Red, 100, -25, 25);
-            Cube cu1 = new Cube(new Util.Point(), Color.Red, 100);
-            Cone co1 = new Cone(new Util.Point(), Color.Red, 100, 200);
-            Disk di1 = new Disk(new Util.Point(), Color.Red, 50, 100);
-            Triangle tr = new Triangle(new Util.Point(), Color.Red, new Util.Point(-100, -50, 0), new Util.Point(100, -50, 0), new Util.Point(0, 100, 0));
-
-            sp1.AddTransformation(GT.Translate(-100));
-            sp3.AddTransformation(GT.Translate(100));
+            Plan lp1 = new Plan(new Point3D(), Color.Red, 100, 100);
+            Cylinder cy1 = new Cylinder(new Point3D(), Color.Red, 100, -25, 25);
+            Cube cu1 = new Cube(new Point3D(), Color.Red, 100);
+            Cone co1 = new Cone(new Point3D(), Color.Red, 100, 200);
+            Disk di1 = new Disk(new Point3D(), Color.White, 100, 200);
+            Triangle tr = new Triangle(new Point3D(), Color.Red, new Point3D(-100, -50, 0), new Point3D(100, -50, 0), new Point3D(0, 100, 0));
 
 
-            cy1.AddTransformation(GT.RotateX(85));
-            cu1.AddTransformation(GT.RotateX(45), GT.RotateY(45));
-            di1.AddTransformation(GT.RotateX(45));
+            di1.AddTransformation(GT.RotateX(20), GT.RotateY(45));
 
-            //AddShapes(sp1, sp2, sp3);
-            AddShapes(cu1);
+            Tracer.AddShapes(sp1, di1);
         }
 
-        private void AddShapes(params Shape[] s)
+        public void CreateLightSources()
         {
-            foreach (Shape shape in s)
-            {
-                Shapes.Add(shape);
-                Console.WriteLine(shape);
-            }
+            PointLight l1 = new PointLight(new Point3D(0, 0, 300), Color.White);
+
+
+            Tracer.AddLightSource(l1);
         }
+
 
         public Bitmap RenderScene()
         {
@@ -78,17 +73,19 @@ namespace Render_Engine
 
             Bitmap bitmap = new Bitmap(View_plan.X_res, View_plan.Y_res, PixelFormat.Format16bppRgb555);
 
+            float halfW = 0.5f * (View_plan.X_res - 1);
+            float halfH = 0.5f * (View_plan.Y_res - 1);
 
-            for (int row = 0; row < View_plan.X_res; row++)
+            for (int y = 0; y < View_plan.Y_res; y++)
             {
-                for (int colunm = 0; colunm < View_plan.Y_res; colunm++)
+                for (int x = 0; x < View_plan.X_res; x++)
                 {
-                    float x = View_plan.Pixel_size * (row - 0.5f * (View_plan.X_res - 1));
-                    float y = View_plan.Pixel_size * (colunm - 0.5f * (View_plan.Y_res - 1));
+                    float px = View_plan.Pixel_size * (x - halfW);
+                    float py = View_plan.Pixel_size * (halfH - y);
 
-                    ray.Origin = new Util.Point(x, y, distanceCameraViewPlan);
+                    ray.Origin = new Point3D(px, py, distanceCameraViewPlan);
                     Color c = Tracer.TraceRay(ray);
-                    bitmap.SetPixel(row, colunm, c);
+                    bitmap.SetPixel(x, y, c);
                 }
             }
 
