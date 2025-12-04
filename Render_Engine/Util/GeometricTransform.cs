@@ -46,47 +46,47 @@ namespace Render_Engine.Util
             InvMatrix = InvMatrix * gt.InvMatrix;
         }
 
-        public static GeometricTransform Translate(float x = 0, float y = 0, float z = 0) => Translate(new Vector3D(-x, y, z));
+        public static GeometricTransform Translate(double x = 0, double y = 0, double z = 0) => Translate(new Vector3D(x, y, z));
 
         public static GeometricTransform Translate(Vector3D v)
         {
-            Matrix4x4 m = new Matrix4x4(1, 0, 0, v.X,
-                                        0, 1, 0, v.Y,
-                                        0, 0, 1, v.Z,
+            Matrix4x4 m = new Matrix4x4(1, 0, 0, (float)v.X,
+                                        0, 1, 0, (float)v.Y,
+                                        0, 0, 1, (float)v.Z,
                                         0, 0, 0, 1);
 
-            Matrix4x4 Im = new Matrix4x4(1, 0, 0, -v.X,
-                                         0, 1, 0, -v.Y,
-                                         0, 0, 1, -v.Z,
+            Matrix4x4 Im = new Matrix4x4(1, 0, 0, (float)-v.X,
+                                         0, 1, 0, (float)-v.Y,
+                                         0, 0, 1, (float)-v.Z,
                                          0, 0, 0, 1);
 
             return new GeometricTransform(m, Im);
         }
 
-        public static GeometricTransform Scale(float x = 1, float y = 1, float z = 1) => Scale(new Vector3D(x, y, z));
+        public static GeometricTransform Scale(double x = 1, double y = 1, double z = 1) => Scale(new Vector3D(x, y, z));
 
         public static GeometricTransform Scale(Vector3D v)
         {
-            Matrix4x4 m = new Matrix4x4(v.X, 0, 0, 0,
-                                        0, v.Y, 0, 0,
-                                        0, 0, v.Z, 0,
+            Matrix4x4 m = new Matrix4x4((float)v.X, 0, 0, 0,
+                                        0, (float)v.Y, 0, 0,
+                                        0, 0, (float)v.Z, 0,
                                         0, 0, 0, 1);
 
-            Matrix4x4 Im = new Matrix4x4(1 / v.X, 0, 0, 0,
-                                         0, 1 / v.Y, 0, 0,
-                                         0, 0, 1 / v.Z, 0,
+            Matrix4x4 Im = new Matrix4x4(1 / (float)v.X, 0, 0, 0,
+                                         0, 1 / (float)v.Y, 0, 0,
+                                         0, 0, 1 / (float)v.Z, 0,
                                          0, 0, 0, 1);
 
             return new GeometricTransform(m, Im);
         }
 
-        public static GeometricTransform RotateX(float x)
+        public static GeometricTransform RotateX(double x)
         {
-            float radX = MathF.PI / 180 * x;
+            double radX = Math.PI / 180 * x;
 
             Matrix4x4 m = new Matrix4x4(1, 0, 0, 0,
-                                           0, MathF.Cos(radX), -MathF.Sin(radX), 0,
-                                           0, MathF.Sin(radX), MathF.Cos(radX), 0,
+                                           0, (float)Math.Cos(radX), (float)-Math.Sin(radX), 0,
+                                           0, (float)Math.Sin(radX), (float)Math.Cos(radX), 0,
                                            0, 0, 0, 1);
 
             Matrix4x4 Im = Matrix4x4.Transpose(m);
@@ -94,13 +94,13 @@ namespace Render_Engine.Util
             return new GeometricTransform(m, Im);
         }
 
-        public static GeometricTransform RotateY(float y)
+        public static GeometricTransform RotateY(double y)
         {
-            float radY = MathF.PI / 180 * y;
+            double radY = Math.PI / 180 * y;
 
-            Matrix4x4 m = new Matrix4x4(MathF.Cos(radY), 0, MathF.Sin(radY), 0,
+            Matrix4x4 m = new Matrix4x4((float)Math.Cos(radY), 0, (float)Math.Sin(radY), 0,
                                            0, 1, 0, 0,
-                                           -MathF.Sin(radY), 0, MathF.Cos(radY), 0,
+                                           -(float)Math.Sin(radY), 0, (float)Math.Cos(radY), 0,
                                            0, 0, 0, 1);
 
             Matrix4x4 Im = Matrix4x4.Transpose(m);
@@ -108,12 +108,12 @@ namespace Render_Engine.Util
             return new GeometricTransform(m, Im);
         }
 
-        public static GeometricTransform RotateZ(float z)
+        public static GeometricTransform RotateZ(double z)
         {
-            float radZ = MathF.PI / 180 * z;
+            double radZ = Math.PI / 180 * z;
 
-            Matrix4x4 m = new Matrix4x4(MathF.Cos(radZ), -MathF.Sin(radZ), 0, 0,
-                                           MathF.Sin(radZ), MathF.Cos(radZ), 0, 0,
+            Matrix4x4 m = new Matrix4x4((float)Math.Cos(radZ), -(float)Math.Sin(radZ), 0, 0,
+                                           (float)Math.Sin(radZ), (float)Math.Cos(radZ), 0, 0,
                                            0, 0, 1, 0,
                                            0, 0, 0, 1);
 

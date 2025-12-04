@@ -6,38 +6,38 @@ namespace Render_Engine.Shapes
 {
     internal class Sphere : Shape
     {
-        public float Radius { get; set; }
+        public double Radius { get; set; }
 
-        public Sphere(Util.Point3D o, Color c, float radius) : base(o, c)
+        public Sphere(Util.Point3D o, Color c, double radius) : base(o, c)
         {
             Radius = radius;
             ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, -radius, -radius), new Util.Point3D(radius, radius, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
-            Surface = 4 * MathF.PI * Radius * Radius;
+            Surface = 4 * Math.PI * Radius * Radius;
         }
 
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
-            Ray r = ApplyTransformationOnRay(worldRay);
+            Ray r = ApplyInvTransformationOnRay(worldRay);
 
             if (ObjectBoundingBox.Intersects(r))
             {
-                float t0;
-                float t1;
+                double t0;
+                double t1;
 
-                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Y, 2) + MathF.Pow(r.Direction.Z, 2);
-                float b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Y * r.Origin.Y + r.Direction.Z * r.Origin.Z);
-                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Y, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius, 2);
+                double a = Math.Pow(r.Direction.X, 2) + Math.Pow(r.Direction.Y, 2) + Math.Pow(r.Direction.Z, 2);
+                double b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Y * r.Origin.Y + r.Direction.Z * r.Origin.Z);
+                double c = Math.Pow(r.Origin.X, 2) + Math.Pow(r.Origin.Y, 2) + Math.Pow(r.Origin.Z, 2) - Math.Pow(Radius, 2);
 
-                float delta = MathF.Pow(b, 2) - 4 * a * c;
+                double delta = Math.Pow(b, 2) - 4 * a * c;
 
                 if (delta < 0)
                     return false;
 
-                t0 = (-b - MathF.Sqrt(delta)) / (2 * a);
-                t1 = (-b + MathF.Sqrt(delta)) / (2 * a);
+                t0 = (-b - Math.Sqrt(delta)) / (2 * a);
+                t1 = (-b + Math.Sqrt(delta)) / (2 * a);
 
                 if (t0 < r.T_min || t0 > r.T_max)
                     if (t1 < r.T_min || t1 > r.T_max)
@@ -58,10 +58,10 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        public override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, double t)
         {
             // Step 1: Transform ray into object space
-            Ray objectRay = ApplyTransformationOnRay(worldRay);
+            Ray objectRay = ApplyInvTransformationOnRay(worldRay);
 
             // Step 2: Compute hit point in object space
             Point3D objectHit = objectRay.Origin + t * objectRay.Direction;
@@ -71,7 +71,7 @@ namespace Render_Engine.Shapes
             localNormal.Normalize();
 
             // Step 4: Transform normal back to world space
-            return ApplyInvTransformationOnNormal(new Normal(localNormal));
+            return ApplyTransformationOnNormal(new Normal(localNormal));
         }
 
         public override string ToString()

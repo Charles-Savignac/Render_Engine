@@ -9,7 +9,7 @@ namespace Render_Engine.Illumination
     {
         public DirectIllumination(World w) : base(w) { }
 
-        private bool IsInShadow(Ray shadowRay, float maxDistance, Shape current)
+        private bool IsInShadow(Ray shadowRay, double maxDistance, Shape current)
         {
             Intersection inter = new Intersection();
             inter.Ray = shadowRay;
@@ -44,7 +44,7 @@ namespace Render_Engine.Illumination
             {
                 Vector3D lightDir = light.GetDirection(inter);
                 lightDir.Normalize();
-                float lightDist = light.GetDistance(inter);
+                double lightDist = light.GetDistance(inter);
 
                 Ray shadowRay = new Ray
                 {
@@ -56,13 +56,13 @@ namespace Render_Engine.Illumination
 
                 if (!IsInShadow(shadowRay, lightDist, inter.HitShape))
                 {
-                    float NdL = Math.Max(0f, inter.Normal * lightDir);
+                    double NdL = Math.Max(0f, inter.Normal * lightDir);
 
                     Color lightColor = light.GetRadiance();
 
-                    float r = pixelColor.R;
-                    float g = pixelColor.G;
-                    float b = pixelColor.B;
+                    double r = pixelColor.R;
+                    double g = pixelColor.G;
+                    double b = pixelColor.B;
 
                     r += objectColor.R * lightColor.R * NdL / 255f;
                     g += objectColor.G * lightColor.G * NdL / 255f;

@@ -6,7 +6,7 @@ using System.Drawing;
 internal class Orthographic : Camera
 {
 
-    protected override Vector3D GetRayDirection(float px, float py)
+    protected override Vector3D GetRayDirection(double px, double py)
     {
         Vector3D rayDir = (Vector3D)(-W);
         rayDir.Normalize();
@@ -14,38 +14,8 @@ internal class Orthographic : Camera
         return rayDir;
     }
 
-    protected override Point3D GetRayOrigin(float px, float py)
+    protected override Point3D GetRayOrigin(double px, double py)
     {
         return Position + U * px + V * py;
-    }
-
-    public override Bitmap RenderScene(World world, Bitmap bitmap)
-    {
-        BuildCCS();
-
-        float halfW = 0.5f * (world.View_plan.X_res - 1);
-        float halfH = 0.5f * (world.View_plan.Y_res - 1);
-
-        for (int y = 0; y < world.View_plan.Y_res; y++)
-        {
-            for (int x = 0; x < world.View_plan.X_res; x++)
-            {
-                float px = world.View_plan.Pixel_size * (x - halfW);
-                float py = world.View_plan.Pixel_size * (halfH - y);
-
-                Ray ray = new Ray
-                {
-                    Origin = GetRayOrigin(px, py),
-                    Direction = GetRayDirection(px, py),
-                    T_min = 0,
-                    T_max = 1000
-                };
-
-                Color c = world.Tracer.TraceRay(ray);
-                bitmap.SetPixel(x, y, c);
-            }
-        }
-
-        return bitmap;
     }
 }

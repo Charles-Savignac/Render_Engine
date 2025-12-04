@@ -1,6 +1,7 @@
 ﻿using Render_Engine.Acceleration;
 using Render_Engine.Cameras;
 using Render_Engine.Illumination;
+using Render_Engine.Sampling;
 using Render_Engine.Shapes;
 using Render_Engine.Util;
 using System;
@@ -24,7 +25,7 @@ namespace Render_Engine
 
         public void Build()
         {
-            View_plan = new ViewPlan(1080, 720);
+            View_plan = new ViewPlan(1080, 720, new UniformSampler(1));
             Background_color = Color.Black;
             Tracer = new DirectIllumination(this);
             CameraType = new Pinhole();
@@ -37,20 +38,12 @@ namespace Render_Engine
 
         private void CreateShapes()
         {
-            Sphere sp1 = new Sphere(new Point3D(), Color.Red, 500);
-            Sphere sp2 = new Sphere(new Point3D(), Color.Green, 500);
-            Sphere sp3 = new Sphere(new Point3D(), Color.Blue, 100);
+            Sphere sp1 = new Sphere(new Point3D(), Color.Red, 250);
+            Sphere sp2 = new Sphere(new Point3D(), Color.Green, 250);
 
 
-            Plan lp1 = new Plan(new Point3D(), Color.Red, 100, 100);
-            Cylinder cy1 = new Cylinder(new Point3D(), Color.Red, 100, -25, 25);
-            Cube cu1 = new Cube(new Point3D(), Color.Red, 100);
-            Cone co1 = new Cone(new Point3D(), Color.Red, 100, 200);
-            Disk di1 = new Disk(new Point3D(), Color.White, 100, 200);
-            Triangle tr = new Triangle(new Point3D(), Color.Red, new Point3D(-100, -50, 0), new Point3D(100, -50, 0), new Point3D(0, 100, 0));
-
-            sp1.AddTransformation(GT.Translate(-500, 0, 600));
-            sp2.AddTransformation(GT.Translate(500, 0, 500));
+            sp1.AddTransformation(GT.Translate(-300, 0, -100));
+            sp2.AddTransformation(GT.Translate(300, 100, 0));
 
             Tracer.AddShapes(sp1, sp2);
         }
@@ -62,10 +55,9 @@ namespace Render_Engine
             Tracer.AddLightSource(l1);
         }
 
-
         public Bitmap RenderScene()
         {
-            Bitmap bitmap = new Bitmap(View_plan.X_res, View_plan.Y_res, PixelFormat.Format16bppRgb555);
+            Bitmap bitmap = new Bitmap(View_plan.X_res, View_plan.Y_res);
             bitmap = CameraType.RenderScene(this, bitmap);
 
             return bitmap;

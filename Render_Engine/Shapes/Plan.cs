@@ -6,11 +6,11 @@ namespace Render_Engine.Shapes
 {
     internal class Plan : Shape
     {
-        public float Witdh { get; private set; }
-        public float Depth { get; private set; }
+        public double Witdh { get; private set; }
+        public double Depth { get; private set; }
         public Normal Normal { get; set; }
 
-        public Plan(Util.Point3D o, Color c, float witdh = 1.0f, float depth = 1.0f) : base(o, c)
+        public Plan(Util.Point3D o, Color c, double witdh = 1.0f, double depth = 1.0f) : base(o, c)
         {
             Witdh = witdh;
             Depth = depth;
@@ -23,7 +23,7 @@ namespace Render_Engine.Shapes
             Surface = witdh * depth;
         }
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
@@ -35,7 +35,7 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        public override Normal GetNormal(Ray r, float t) => ApplyInvTransformationOnNormal(Normal);
+        public override Normal GetNormal(Ray r, double t) => ApplyInvTransformationOnNormal(Normal);
 
         public override string ToString()
         {

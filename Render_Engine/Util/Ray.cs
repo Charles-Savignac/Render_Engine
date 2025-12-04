@@ -8,8 +8,8 @@
     {
         public Point3D Origin { get; set; }
         public Vector3D Direction { get; set; }
-        public float? T_min { get; set; }
-        public float? T_max { get; set; }
+        public double? T_min { get; set; }
+        public double? T_max { get; set; }
         public int Depth { get; set; }
 
         /// <summary>
@@ -46,7 +46,7 @@
         /// <param name="min">Minimum valid intersection parameter.</param>
         /// <param name="max">Maximum valid intersection parameter.</param>
         /// <param name="depth">Recursion depth (e.g., for reflections).</param>
-        public Ray(Point3D p, Vector3D d, float min, float max, int depth)
+        public Ray(Point3D p, Vector3D d, double min, double max, int depth)
         {
             Origin = p;
             Direction = d;

@@ -34,19 +34,19 @@ namespace Render_Engine.Shapes
 
         private void CalculateBoundingBox()
         {
-            float minX = Math.Min(PointA.X, Math.Min(PointB.X, PointC.X));
-            float minY = Math.Min(PointA.Y, Math.Min(PointB.Y, PointC.Y));
-            float minZ = Math.Min(PointA.Z, Math.Min(PointB.Z, PointC.Z));
+            double minX = Math.Min(PointA.X, Math.Min(PointB.X, PointC.X));
+            double minY = Math.Min(PointA.Y, Math.Min(PointB.Y, PointC.Y));
+            double minZ = Math.Min(PointA.Z, Math.Min(PointB.Z, PointC.Z));
 
-            float maxX = Math.Max(PointA.X, Math.Max(PointB.X, PointC.X));
-            float maxY = Math.Max(PointA.Y, Math.Max(PointB.Y, PointC.Y));
-            float maxZ = Math.Max(PointA.Z, Math.Max(PointB.Z, PointC.Z));
+            double maxX = Math.Max(PointA.X, Math.Max(PointB.X, PointC.X));
+            double maxY = Math.Max(PointA.Y, Math.Max(PointB.Y, PointC.Y));
+            double maxZ = Math.Max(PointA.Z, Math.Max(PointB.Z, PointC.Z));
 
             ObjectBoundingBox = new BoundingBox(new Util.Point3D(minX, minY, minZ), new Util.Point3D(maxX, maxY, maxZ));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
         }
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
             if (ObjectBoundingBox.Intersects(r))
@@ -58,10 +58,10 @@ namespace Render_Engine.Shapes
                 Vector3D s = r.Origin - PointA;
                 VectorClass q = s.CrossProduct(edge1);
 
-                float a = edge1.Dot(h);
-                float f = 1.0f / a;
-                float u = f * s.Dot(h);
-                float v = f * r.Direction.Dot(q);
+                double a = edge1.Dot(h);
+                double f = 1.0f / a;
+                double u = f * s.Dot(h);
+                double v = f * r.Direction.Dot(q);
 
                 t = f * edge2.Dot(q);
 
@@ -76,7 +76,7 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        public override Normal GetNormal(Ray r, float t) => ApplyInvTransformationOnNormal(Normal);
+        public override Normal GetNormal(Ray r, double t) => ApplyInvTransformationOnNormal(Normal);
 
         public override string ToString()
         {

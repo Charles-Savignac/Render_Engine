@@ -6,11 +6,11 @@ namespace Render_Engine.Shapes
 {
     internal class Disk : Shape
     {
-        public float RadiusIn { get; private set; }
-        public float RadiusOut { get; private set; }
+        public double RadiusIn { get; private set; }
+        public double RadiusOut { get; private set; }
         public Normal Normal { get; init; }
 
-        public Disk(Util.Point3D p, Color c, float radiusIn, float radiusOut) : base(p, c)
+        public Disk(Util.Point3D p, Color c, double radiusIn, double radiusOut) : base(p, c)
         {
             RadiusIn = radiusIn;
             RadiusOut = radiusOut;
@@ -19,30 +19,30 @@ namespace Render_Engine.Shapes
             ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radiusOut, 0, -radiusOut), new Util.Point3D(radiusOut, 0, radiusOut));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
-            Surface = MathF.PI * (radiusOut * radiusOut - radiusIn * radiusIn);
+            Surface = Math.PI * (radiusOut * radiusOut - radiusIn * radiusIn);
         }
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
             if (ObjectBoundingBox.Intersects(r))
             {
                 Util.Point3D intersectionPoint;
-                float distanceSquared;
+                double distanceSquared;
 
                 t = -r.Origin.Y / r.Direction.Y;
 
                 intersectionPoint = new Util.Point3D(r.Origin.X + t * r.Direction.X, 0, r.Origin.Z + t * r.Direction.Z);
-                distanceSquared = MathF.Pow(intersectionPoint.X, 2) + MathF.Pow(intersectionPoint.Z, 2);
+                distanceSquared = Math.Pow(intersectionPoint.X, 2) + Math.Pow(intersectionPoint.Z, 2);
 
-                if (distanceSquared >= MathF.Pow(RadiusIn, 2) && distanceSquared <= MathF.Pow(RadiusOut, 2))
+                if (distanceSquared >= Math.Pow(RadiusIn, 2) && distanceSquared <= Math.Pow(RadiusOut, 2))
                     return true;
             }
             return false;
         }
 
-        public override Normal GetNormal(Ray r, float t) => ApplyInvTransformationOnNormal(Normal);
+        public override Normal GetNormal(Ray r, double t) => ApplyInvTransformationOnNormal(Normal);
 
         public override string ToString()
         {

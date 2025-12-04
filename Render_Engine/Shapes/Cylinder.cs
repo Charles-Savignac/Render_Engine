@@ -6,11 +6,11 @@ namespace Render_Engine.Shapes
 {
     internal class Cylinder : Shape
     {
-        public float Radius { get; private set; }
-        public float MaxY { get; private set; }
-        public float MinY { get; private set; }
+        public double Radius { get; private set; }
+        public double MaxY { get; private set; }
+        public double MinY { get; private set; }
 
-        public Cylinder(Util.Point3D o, Color c, float radius = 1.0f, float minY = -1.0f, float maxY = 1.0f) : base(o, c)
+        public Cylinder(Util.Point3D o, Color c, double radius = 1.0f, double minY = -1.0f, double maxY = 1.0f) : base(o, c)
         {
             Radius = radius;
             MaxY = maxY;
@@ -19,28 +19,28 @@ namespace Render_Engine.Shapes
             ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, minY, -radius), new Util.Point3D(radius, maxY, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
-            Surface = 2 * MathF.PI * Radius * (MaxY - MinY);
+            Surface = 2 * Math.PI * Radius * (MaxY - MinY);
         }
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
             Ray r = ApplyTransformationOnRay(worldRay);
 
             if (ObjectBoundingBox.Intersects(r))
             {
-                float t0;
-                float t1;
+                double t0;
+                double t1;
 
-                float a = MathF.Pow(r.Direction.X, 2) + MathF.Pow(r.Direction.Z, 2);
-                float b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Z * r.Origin.Z);
-                float c = MathF.Pow(r.Origin.X, 2) + MathF.Pow(r.Origin.Z, 2) - MathF.Pow(Radius, 2);
+                double a = Math.Pow(r.Direction.X, 2) + Math.Pow(r.Direction.Z, 2);
+                double b = 2 * (r.Direction.X * r.Origin.X + r.Direction.Z * r.Origin.Z);
+                double c = Math.Pow(r.Origin.X, 2) + Math.Pow(r.Origin.Z, 2) - Math.Pow(Radius, 2);
 
-                float discriminant = MathF.Pow(b, 2) - 4 * a * c;
+                double discriminant = Math.Pow(b, 2) - 4 * a * c;
 
                 if (discriminant < 0)
                     return false;
 
-                float sqrtDiscriminant = MathF.Sqrt(discriminant);
+                double sqrtDiscriminant = Math.Sqrt(discriminant);
 
                 t0 = (-b - sqrtDiscriminant) / (2 * a);
                 t1 = (-b + sqrtDiscriminant) / (2 * a);
@@ -64,15 +64,15 @@ namespace Render_Engine.Shapes
             return false;
         }
 
-        public override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, double t)
         {
             //Ray r = ApplyTransformationOnRay(worldRay);
 
             //Normal n = new Normal();
             //VectorClass result;
-            //float z = r.Origin.Z + t * r.Direction.Z;
+            //double z = r.Origin.Z + t * r.Direction.Z;
 
-            //Vector3D uPrime = new Vector3D(2 * MathF.PI * z, 0, -2 * MathF.PI * (r.Origin.X));
+            //Vector3D uPrime = new Vector3D(2 * Math.PI * z, 0, -2 * Math.PI * (r.Origin.X));
             //Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
 
             //result = uPrime.CrossProduct(VPrime);

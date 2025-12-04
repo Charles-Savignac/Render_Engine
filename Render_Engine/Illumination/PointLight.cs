@@ -15,7 +15,7 @@ namespace Render_Engine.Illumination
 
         public PointLight(Point3D position) : base(position, Color.White, 1.0f) { }
         public PointLight(Point3D position, Color color) : base(position, color, 1.0f) { }
-        public PointLight(Point3D position, Color color, float intensity) : base(position, color, intensity) { }
+        public PointLight(Point3D position, Color color, double intensity) : base(position, color, intensity) { }
 
         public override Vector3D GetDirection(Intersection t)
         {
@@ -25,7 +25,7 @@ namespace Render_Engine.Illumination
             return v;
         }
 
-        public override float GetDistance(Intersection t) => (Position - t.HitPoint).Norm();
+        public override double GetDistance(Intersection t) => (Position - t.HitPoint).Norm();
 
         public override Color GetRadiance() => Color.FromArgb((int)(LightIntensity * LightColor.R), 
                                                               (int)(LightIntensity * LightColor.G), 

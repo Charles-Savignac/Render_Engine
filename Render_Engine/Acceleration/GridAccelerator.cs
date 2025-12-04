@@ -55,9 +55,9 @@ namespace Render_Engine.Acceleration
             CellCount[2] = Math.Max(1, (int)(diag.Z * scale));
 
             CellSize = new Vector3D(
-                (float)(diag.X / CellCount[0]),
-                (float)(diag.Y / CellCount[1]),
-                (float)(diag.Z / CellCount[2])
+                (double)(diag.X / CellCount[0]),
+                (double)(diag.Y / CellCount[1]),
+                (double)(diag.Z / CellCount[2])
             );
 
             InvCellSize = new Vector3D(
@@ -138,31 +138,31 @@ namespace Render_Engine.Acceleration
             step[2] = dir.Z >= 0 ? 1 : -1;
 
             // Compute tMax (distance along ray to next cell boundary)
-            float[] tMax = new float[3];
-            float[] tDelta = new float[3];
+            double[] tMax = new double[3];
+            double[] tDelta = new double[3];
 
             for (int i = 0; i < 3; i++)
             {
-                float cellSizeAxis = i == 0 ? CellSize.X : (i == 1 ? CellSize.Y : CellSize.Z);
-                float rayDirAxis = i == 0 ? dir.X : (i == 1 ? dir.Y : dir.Z);
-                float cellMin = i == 0 ? ObjectBoundingBox.PMin.X : (i == 1 ? ObjectBoundingBox.PMin.Y : ObjectBoundingBox.PMin.Z);
+                double cellSizeAxis = i == 0 ? CellSize.X : (i == 1 ? CellSize.Y : CellSize.Z);
+                double rayDirAxis = i == 0 ? dir.X : (i == 1 ? dir.Y : dir.Z);
+                double cellMin = i == 0 ? ObjectBoundingBox.PMin.X : (i == 1 ? ObjectBoundingBox.PMin.Y : ObjectBoundingBox.PMin.Z);
 
                 if (rayDirAxis != 0)
                 {
                     // Distance to first boundary along ray
-                    float nextBoundary = cellMin + (cell[i] + (step[i] > 0 ? 1 : 0)) * cellSizeAxis;
+                    double nextBoundary = cellMin + (cell[i] + (step[i] > 0 ? 1 : 0)) * cellSizeAxis;
                     tMax[i] = (nextBoundary - (i == 0 ? origin.X : i == 1 ? origin.Y : origin.Z)) / rayDirAxis;
-                    tDelta[i] = MathF.Abs(cellSizeAxis / rayDirAxis);
+                    tDelta[i] = Math.Abs(cellSizeAxis / rayDirAxis);
                 }
                 else
                 {
-                    tMax[i] = float.MaxValue;
-                    tDelta[i] = float.MaxValue;
+                    tMax[i] = double.MaxValue;
+                    tDelta[i] = double.MaxValue;
                 }
             }
 
             bool hit = false;
-            float mint = (float)inter.Ray.T_max;
+            double mint = (double)inter.Ray.T_max;
 
             // Traverse the grid until we leave it
             while (cell[0] >= 0 && cell[0] < CellCount[0] &&
@@ -179,7 +179,7 @@ namespace Render_Engine.Acceleration
                         hit = true;
 
                         // Optional early-out: intersection is inside this cell
-                        if (mint <= MathF.Min(MathF.Min(tMax[0], tMax[1]), tMax[2]))
+                        if (mint <= Math.Min(Math.Min(tMax[0], tMax[1]), tMax[2]))
                             break;
                     }
                 }
@@ -241,11 +241,11 @@ namespace Render_Engine.Acceleration
         public bool Intersects(ref Intersection inter)
         {
             bool hit = false;
-            float mint = float.MaxValue;
+            double mint = double.MaxValue;
 
             foreach (Shape obj in Shapes)
             {
-                float tmpt = 0;
+                double tmpt = 0;
                 if (obj.Intersects(inter.Ray, ref tmpt) && tmpt < mint)
                 {
                     mint = tmpt;

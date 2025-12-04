@@ -13,7 +13,7 @@ namespace Render_Engine.Shapes
         public GeometricTransform Transformation { get; protected set; }
         public BoundingBox ObjectBoundingBox { get; protected set; }
         public BoundingBox WorldBoundingBox { get; protected set; }
-        public float Surface { get; protected set; }
+        public double Surface { get; protected set; }
 
         private static int IdCounter = 0;
 
@@ -28,10 +28,10 @@ namespace Render_Engine.Shapes
             Transformation = new GeometricTransform();
         }
 
-        public abstract bool Intersects(Ray r, ref float t);
-        public abstract Normal GetNormal(Ray r, float t);
+        public abstract bool Intersects(Ray r, ref double t);
+        public abstract Normal GetNormal(Ray r, double t);
 
-        public Color Blend(float scalar)
+        public Color Blend(double scalar)
         {
             int r = (int)Math.Clamp(ShapeColor.R * scalar, 0, 255);
             int g = (int)Math.Clamp(ShapeColor.G * scalar, 0, 255);
@@ -45,8 +45,8 @@ namespace Render_Engine.Shapes
             foreach (GeometricTransform gt in transformations)
                 Transformation.Multiply(gt);
 
-            Point3D pMin = new Point3D(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            Point3D pMax = new Point3D(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            Point3D pMin = new Point3D(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
+            Point3D pMax = new Point3D(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
 
             Point3D[] corners =
             {
@@ -142,9 +142,9 @@ namespace Render_Engine.Shapes
             return localRay;
         }
 
-        protected void Swap(ref float a, ref float b)
+        protected void Swap(ref double a, ref double b)
         {
-            float temp = a;
+            double temp = a;
             a = b;
             b = temp;
         }

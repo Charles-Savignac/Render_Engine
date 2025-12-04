@@ -33,7 +33,7 @@ namespace Render_Engine.Acceleration
 
         public int MaxAxis()
         {
-            float[] AxisLength = {PMax.X - PMin.X,
+            double[] AxisLength = {PMax.X - PMin.X,
                                   PMax.Y - PMin.Y,
                                   PMax.Z - PMin.Z };
 
@@ -56,14 +56,14 @@ namespace Render_Engine.Acceleration
 
         public bool Intersects(Ray r)
         {
-            float t0 = (PMin.X - r.Origin.X) / r.Direction.X;
-            float t1 = (PMax.X - r.Origin.X) / r.Direction.X;
+            double t0 = (PMin.X - r.Origin.X) / r.Direction.X;
+            double t1 = (PMax.X - r.Origin.X) / r.Direction.X;
 
             if (t0 > t1)
                 Swap(ref t0, ref t1);
 
-            float ty0 = (PMin.Y - r.Origin.Y) / r.Direction.Y;
-            float ty1 = (PMax.Y - r.Origin.Y) / r.Direction.Y;
+            double ty0 = (PMin.Y - r.Origin.Y) / r.Direction.Y;
+            double ty1 = (PMax.Y - r.Origin.Y) / r.Direction.Y;
 
             if (ty0 > ty1)
                 Swap(ref ty0, ref ty1);
@@ -76,8 +76,8 @@ namespace Render_Engine.Acceleration
             if (ty1 < t1)
                 t1 = ty1;
 
-            float tz0 = (PMin.Z - r.Origin.Z) / r.Direction.Z;
-            float tz1 = (PMax.Z - r.Origin.Z) / r.Direction.Z;
+            double tz0 = (PMin.Z - r.Origin.Z) / r.Direction.Z;
+            double tz1 = (PMax.Z - r.Origin.Z) / r.Direction.Z;
 
             if (tz0 > tz1)
                 Swap(ref tz0, ref tz1);
@@ -88,9 +88,9 @@ namespace Render_Engine.Acceleration
             return true;
         }
 
-        private void Swap(ref float a, ref float b)
+        private void Swap(ref double a, ref double b)
         {
-            float temp = a;
+            double temp = a;
             a = b;
             b = temp;
         }

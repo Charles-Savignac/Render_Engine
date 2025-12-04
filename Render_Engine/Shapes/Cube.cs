@@ -6,9 +6,9 @@ namespace Render_Engine.Shapes
 {
     internal class Cube : Shape
     {
-        public float Size { get; private set; }
+        public double Size { get; private set; }
 
-        public Cube(Util.Point3D center, Color c, float size = 1.0f) : base(center, c)
+        public Cube(Point3D center, Color c, double size = 1.0f) : base(center, c)
         {
             Size = size;
 
@@ -20,20 +20,20 @@ namespace Render_Engine.Shapes
             Surface = 6 * size * size;
         }
 
-        public override bool Intersects(Ray worldRay, ref float t)
+        public override bool Intersects(Ray worldRay, ref double t)
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 
-            var min = new Util.Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
-            var max = new Util.Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
+            var min = new Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
+            var max = new Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
 
-            float tMin = (min.X - r.Origin.X) / r.Direction.X;
-            float tMax = (max.X - r.Origin.X) / r.Direction.X;
+            double tMin = (min.X - r.Origin.X) / r.Direction.X;
+            double tMax = (max.X - r.Origin.X) / r.Direction.X;
 
             if (tMin > tMax) Swap(ref tMin, ref tMax);
 
-            float tyMin = (min.Y - r.Origin.Y) / r.Direction.Y;
-            float tyMax = (max.Y - r.Origin.Y) / r.Direction.Y;
+            double tyMin = (min.Y - r.Origin.Y) / r.Direction.Y;
+            double tyMax = (max.Y - r.Origin.Y) / r.Direction.Y;
 
             if (tyMin > tyMax) Swap(ref tyMin, ref tyMax);
 
@@ -43,8 +43,8 @@ namespace Render_Engine.Shapes
             if (tyMin > tMin) tMin = tyMin;
             if (tyMax < tMax) tMax = tyMax;
 
-            float tzMin = (min.Z - r.Origin.Z) / r.Direction.Z;
-            float tzMax = (max.Z - r.Origin.Z) / r.Direction.Z;
+            double tzMin = (min.Z - r.Origin.Z) / r.Direction.Z;
+            double tzMax = (max.Z - r.Origin.Z) / r.Direction.Z;
 
             if (tzMin > tzMax) Swap(ref tzMin, ref tzMax);
 
@@ -58,21 +58,21 @@ namespace Render_Engine.Shapes
             return true;
         }
 
-        public override Normal GetNormal(Ray worldRay, float t)
+        public override Normal GetNormal(Ray worldRay, double t)
         {
             Ray r = ApplyInvTransformationOnRay(worldRay);
 
-            var intersectionPoint = new Util.Point3D(
+            var intersectionPoint = new Point3D(
                 r.Origin.X + t * r.Direction.X,
                 r.Origin.Y + t * r.Direction.Y,
                 r.Origin.Z + t * r.Direction.Z);
 
             // Get cube boundaries in object space
-            Util.Point3D min = new Util.Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
-            Util.Point3D max = new Util.Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
+            Point3D min = new Point3D(Origine.X - Size / 2, Origine.Y - Size / 2, Origine.Z - Size / 2);
+            Point3D max = new Point3D(Origine.X + Size / 2, Origine.Y + Size / 2, Origine.Z + Size / 2);
 
             // Choose normal based on which face the intersection is closest to
-            const float epsilon = 1e-4f; // much larger than float.Epsilon
+            const double epsilon = 1e-4f; // much larger than double.Epsilon
             Normal n = new Normal();
 
             if (Math.Abs(intersectionPoint.X - min.X) < epsilon)
@@ -94,7 +94,7 @@ namespace Render_Engine.Shapes
                 var dx = Math.Min(Math.Abs(intersectionPoint.X - min.X), Math.Abs(intersectionPoint.X - max.X));
                 var dy = Math.Min(Math.Abs(intersectionPoint.Y - min.Y), Math.Abs(intersectionPoint.Y - max.Y));
                 var dz = Math.Min(Math.Abs(intersectionPoint.Z - min.Z), Math.Abs(intersectionPoint.Z - max.Z));
-                float m = Math.Min(dx, Math.Min(dy, dz));
+                double m = Math.Min(dx, Math.Min(dy, dz));
                 if (m == dx) n = new Normal(Math.Sign(intersectionPoint.X), 0, 0);
                 else if (m == dy) n = new Normal(0, Math.Sign(intersectionPoint.Y), 0);
                 else n = new Normal(0, 0, Math.Sign(intersectionPoint.Z));

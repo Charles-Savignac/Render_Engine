@@ -18,7 +18,7 @@
         /// <param name="x">X component.</param>
         /// <param name="y">Y component.</param>
         /// <param name="z">Z component.</param>
-        public Vector3D(float x, float y, float z) : base(x, y, z) { }
+        public Vector3D(double x, double y, double z) : base(x, y, z) { }
 
         /// <summary>
         /// Creates a 3D vector from a <see cref="Point3D"/> object.

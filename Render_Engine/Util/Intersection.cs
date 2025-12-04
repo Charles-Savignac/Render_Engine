@@ -8,7 +8,7 @@ namespace Render_Engine.Util
         public Point3D? HitPoint { get; set; }
         public Normal? Normal { get; set; }
         public Shape? HitShape { get; set; }
-        public float t { get; set; }
+        public double t { get; set; }
 
         public Intersection()
         {

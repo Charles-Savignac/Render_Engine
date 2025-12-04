@@ -7,9 +7,9 @@ namespace Render_Engine.Illumination
     {
         public Point3D Position { get; private set; }
         public Color LightColor { get; private set; }
-        public float LightIntensity { get; private set; }
+        public double LightIntensity { get; private set; }
 
-        protected Light(Point3D position, Color color, float iintensity)
+        protected Light(Point3D position, Color color, double iintensity)
         {
             Position = position;
             LightColor = color;
@@ -18,13 +18,13 @@ namespace Render_Engine.Illumination
 
         public abstract Vector3D GetDirection(Intersection t);
 
-        public abstract float GetDistance(Intersection t);
+        public abstract double GetDistance(Intersection t);
 
         public abstract Color GetRadiance();
 
-        public virtual float g() => 1;
+        public virtual double g() => 1;
 
-        public virtual float pdf() => 1;
+        public virtual double pdf() => 1;
     }
 }
 

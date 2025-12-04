@@ -18,7 +18,7 @@
         /// <param name="x">X component.</param>
         /// <param name="y">Y component.</param>
         /// <param name="z">Z component.</param>
-        public Normal(float x, float y, float z) : base(x, y, z) { }
+        public Normal(double x, double y, double z) : base(x, y, z) { }
 
         /// <summary>
         /// Creates a normal vector from a <see cref="Point3D"/> object.
