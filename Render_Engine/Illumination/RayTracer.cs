@@ -38,6 +38,6 @@ namespace Render_Engine.Illumination
             }
         }
 
-        public abstract Color TraceRay(Ray r);
+        public abstract Color TraceRay(Ray r, int depth);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
@@ -9,12 +9,12 @@ namespace Render_Engine.Shapes
         public double Radius { get; private set; }
         public double Height { get; private set; }
 
-        public Cone(Util.Point3D p, Color c, double radius = 1.0f, double height = 1.0f) : base(p, c)
+        public Cone(Point3D o, Material mat, double radius = 1.0f, double height = 1.0f) : base(o, mat)
         {
             Radius = radius;
             Height = height;
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, 0, -radius), new Util.Point3D(radius, height, radius));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-radius, 0, -radius), new Point3D(radius, height, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = Math.PI * radius * Math.Sqrt(radius * radius + height * height);

@@ -1,4 +1,5 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
 using System.Drawing;
 
@@ -10,13 +11,13 @@ namespace Render_Engine.Shapes
         public double Depth { get; private set; }
         public Normal Normal { get; set; }
 
-        public Plan(Util.Point3D o, Color c, double witdh = 1.0f, double depth = 1.0f) : base(o, c)
+        public Plan(Point3D o, Material mat, double witdh = 1.0f, double depth = 1.0f) : base(o, mat)
         {
             Witdh = witdh;
             Depth = depth;
             Normal = new Normal(0, 1, 0);
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-witdh / 2, 0, depth / 2), new Util.Point3D(witdh / 2, 0, -depth / 2));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-witdh / 2, 0, depth / 2), new Point3D(witdh / 2, 0, -depth / 2));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
 

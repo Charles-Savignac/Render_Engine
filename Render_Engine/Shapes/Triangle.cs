@@ -1,17 +1,17 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
     internal class Triangle : Shape
     {
-        public Util.Point3D PointA { get; private set; }
-        public Util.Point3D PointB { get; private set; }
-        public Util.Point3D PointC { get; private set; }
+        public Point3D PointA { get; private set; }
+        public Point3D PointB { get; private set; }
+        public Point3D PointC { get; private set; }
         public Normal Normal { get; set; }
 
-        public Triangle(Util.Point3D o, Color c, Util.Point3D a, Util.Point3D b, Util.Point3D pointc) : base(o, c)
+        public Triangle(Point3D o, Material mat, Point3D a, Point3D b, Point3D pointc) : base(o, mat)
         {
             PointA = a;
             PointB = b;
@@ -42,7 +42,7 @@ namespace Render_Engine.Shapes
             double maxY = Math.Max(PointA.Y, Math.Max(PointB.Y, PointC.Y));
             double maxZ = Math.Max(PointA.Z, Math.Max(PointB.Z, PointC.Z));
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(minX, minY, minZ), new Util.Point3D(maxX, maxY, maxZ));
+            ObjectBoundingBox = new BoundingBox(new Point3D(minX, minY, minZ), new Point3D(maxX, maxY, maxZ));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
         }
 

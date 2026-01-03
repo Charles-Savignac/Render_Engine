@@ -1,6 +1,7 @@
 ﻿using Render_Engine.Acceleration;
 using Render_Engine.Cameras;
 using Render_Engine.Illumination;
+using Render_Engine.Materials;
 using Render_Engine.Sampling;
 using Render_Engine.Shapes;
 using Render_Engine.Util;
@@ -27,7 +28,7 @@ namespace Render_Engine
         {
             View_plan = new ViewPlan(1080, 720, new UniformSampler(1));
             Background_color = Color.Black;
-            Tracer = new DirectIllumination(this);
+            Tracer = new WhittedRayTracer(this);
             CameraType = new Pinhole();
 
             CreateShapes();
@@ -38,14 +39,28 @@ namespace Render_Engine
 
         private void CreateShapes()
         {
-            Sphere sp1 = new Sphere(new Point3D(), Color.Red, 250);
-            Sphere sp2 = new Sphere(new Point3D(), Color.Green, 250);
+            Phong phong = new Phong(Color.Red);
+            Matte matte = new Matte(Color.Red);
+
+            Reflective refMatRed = new Reflective(Color.Red);
+            Reflective refMatBlue = new Reflective(Color.Blue);
+            Reflective refMatYellow = new Reflective(Color.Yellow);
+            Reflective refMatBluOrange = new Reflective(Color.Orange);
+
+            Mirror mirrorMat = new Mirror();
+
+            Sphere sp1 = new Sphere(new Point3D(), refMatRed, 250);
+            Sphere sp2 = new Sphere(new Point3D(), refMatBlue, 250);
+            Sphere sp3 = new Sphere(new Point3D(), refMatYellow, 250);
+            Sphere sp4 = new Sphere(new Point3D(), refMatBluOrange, 250);
+
+            sp1.AddTransformation(GT.Translate(400));
+            sp2.AddTransformation(GT.Translate(-400));
+            sp3.AddTransformation(GT.Translate(0, -400));
+            sp4.AddTransformation(GT.Translate(0, 400));
 
 
-            sp1.AddTransformation(GT.Translate(-300, 0, -100));
-            sp2.AddTransformation(GT.Translate(300, 100, 0));
-
-            Tracer.AddShapes(sp1, sp2);
+            Tracer.AddShapes(sp1, sp2, sp3, sp4);
         }
 
         public void CreateLightSources()

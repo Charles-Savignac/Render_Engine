@@ -108,7 +108,7 @@ namespace Render_Engine.Cameras
                             T_max = 1000
                         };
 
-                        Color c = world.Tracer.TraceRay(ray);
+                        Color c = world.Tracer.TraceRay(ray, 0);
 
                         rAcc += c.R;
                         gAcc += c.G;

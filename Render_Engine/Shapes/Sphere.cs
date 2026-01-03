@@ -1,6 +1,6 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
@@ -8,10 +8,10 @@ namespace Render_Engine.Shapes
     {
         public double Radius { get; set; }
 
-        public Sphere(Util.Point3D o, Color c, double radius) : base(o, c)
+        public Sphere(Point3D o, Material mat, double radius) : base(o, mat)
         {
             Radius = radius;
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, -radius, -radius), new Util.Point3D(radius, radius, radius));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-radius, -radius, -radius), new Point3D(radius, radius, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = 4 * Math.PI * Radius * Radius;

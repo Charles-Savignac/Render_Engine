@@ -1,4 +1,5 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
 using System.Drawing;
 
@@ -8,37 +9,28 @@ namespace Render_Engine.Shapes
     internal abstract class Shape
     {
         public int Id { get; set; }
-        public Util.Point3D Origine { get; set; }
-        public Color ShapeColor { get; set; }
+        public Point3D Origine { get; set; }
         public GeometricTransform Transformation { get; protected set; }
         public BoundingBox ObjectBoundingBox { get; protected set; }
         public BoundingBox WorldBoundingBox { get; protected set; }
+        public Material Material { get; set; }
         public double Surface { get; protected set; }
 
         private static int IdCounter = 0;
 
 
-        public Shape(Util.Point3D o, Color color)
+        public Shape(Point3D o, Material mat)
         {
             Id = ++IdCounter;
 
             Origine = o;
-            ShapeColor = color;
+            Material = mat;
 
             Transformation = new GeometricTransform();
         }
 
         public abstract bool Intersects(Ray r, ref double t);
         public abstract Normal GetNormal(Ray r, double t);
-
-        public Color Blend(double scalar)
-        {
-            int r = (int)Math.Clamp(ShapeColor.R * scalar, 0, 255);
-            int g = (int)Math.Clamp(ShapeColor.G * scalar, 0, 255);
-            int b = (int)Math.Clamp(ShapeColor.B * scalar, 0, 255);
-
-            return Color.FromArgb(r, g, b);
-        }
 
         public void AddTransformation(params GeometricTransform[] transformations)
         {
@@ -151,7 +143,7 @@ namespace Render_Engine.Shapes
 
         public override string ToString()
         {
-            return $"   Color: {ShapeColor.Name}\n" +
+            return $"   Color: {Material.MatColor.Name}\n" +
                    $"   Center: {ApplyTransformationOnPoint(Origine)}\n" +
                    $"   Transformation Matrix: {Transformation}\n\n" +
                    $"   Bounding Box: {WorldBoundingBox}\n";
