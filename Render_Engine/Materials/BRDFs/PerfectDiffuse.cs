@@ -19,11 +19,10 @@ namespace Render_Engine.Materials.BRDFs
         public override Color F(Intersection inter, Vector3D wi, Vector3D wo)
         {
             Vector3D albedo = SrgbToLinear(Color);
-            float k = Math.Clamp(K, 0.0f, 1.0f);
 
             const float invPi = 1.0f / (float)Math.PI;
 
-            Vector3D linearResult = (Vector3D)(albedo * k * invPi);
+            Vector3D linearResult = (Vector3D)(albedo * K * invPi);
 
             return LinearToSrgbClamped(linearResult);
         }

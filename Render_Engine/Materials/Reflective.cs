@@ -21,7 +21,7 @@ namespace Render_Engine.Materials
             DiffuseBRDF.SetCoeff(1.0f);
             DiffuseBRDF.SetColor(c);
 
-            ReflectBRDF.Kr = 1.0f;
+            ReflectBRDF.Kr = 0.025f;
             ReflectBRDF.Cr = Color.White;
 
             SpecularBRDF.Ks = 0.5f;

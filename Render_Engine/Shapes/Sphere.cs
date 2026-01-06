@@ -20,7 +20,7 @@ namespace Render_Engine.Shapes
 
         public override bool Intersects(Ray worldRay, ref double t)
         {
-            Ray r = ApplyInvTransformationOnRay(worldRay);
+            Ray r = ApplyTransformationOnRay(worldRay);
 
             if (ObjectBoundingBox.Intersects(r))
             {
@@ -61,7 +61,7 @@ namespace Render_Engine.Shapes
         public override Normal GetNormal(Ray worldRay, double t)
         {
             // Step 1: Transform ray into object space
-            Ray objectRay = ApplyInvTransformationOnRay(worldRay);
+            Ray objectRay = ApplyTransformationOnRay(worldRay);
 
             // Step 2: Compute hit point in object space
             Point3D objectHit = objectRay.Origin + t * objectRay.Direction;
@@ -71,7 +71,7 @@ namespace Render_Engine.Shapes
             localNormal.Normalize();
 
             // Step 4: Transform normal back to world space
-            return ApplyTransformationOnNormal(new Normal(localNormal));
+            return ApplyInvTransformationOnNormal(new Normal(localNormal));
         }
 
         public override string ToString()

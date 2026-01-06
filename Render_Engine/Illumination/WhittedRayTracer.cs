@@ -12,17 +12,20 @@ namespace Render_Engine.Illumination
 
         public override Color TraceRay(Ray ray, int depth)
         {
-            Color pixelColor = PresentWorld.Background_color;
+            Color pixelColor;
+
+            if (PresentWorld.Skybox == null)
+                pixelColor = PresentWorld.Background_color;
+            else
+                pixelColor = PresentWorld.Skybox.Sample(ray.Direction);
+
 
             Intersection inter = new Intersection();
             inter.World = PresentWorld;
             inter.Ray = ray;
             inter.Depth = depth;
 
-            if (depth > MaxDepth)
-                return pixelColor;
-
-            if (!PresentWorld.AccelerationTec.Intersects(ref inter))
+            if (depth > MaxDepth || !PresentWorld.AccelerationTec.Intersects(ref inter))
                 return pixelColor;
 
             inter.HitPoint = ray.Origin + inter.t * ray.Direction;

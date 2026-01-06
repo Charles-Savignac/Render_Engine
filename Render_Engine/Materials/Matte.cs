@@ -27,11 +27,8 @@ namespace Render_Engine.Materials
             foreach (var light in inter.World.Tracer.Lights)
             {
                 Vector3D wi = light.GetDirection(inter);
-                wi.Normalize();
 
-                double cosNI = wi.Dot(inter.Normal);
-                if (cosNI <= 0.0)
-                    continue;
+                double cosNI = Math.Max(0, wi * inter.Normal);
 
                 Point3D origin = inter.HitPoint + inter.Normal * 0.001f;
 
@@ -53,9 +50,9 @@ namespace Render_Engine.Materials
                     continue;
 
                 Color f = DiffuseBRDF.F(inter, wi, wo);
-                Vector3D fLinear = PerfectDiffuse.SrgbToLinear(f);
+                Vector3D fLinear = BRDF.SrgbToLinear(f);
 
-                Vector3D Li = PerfectDiffuse.SrgbToLinear(light.GetRadiance());
+                Vector3D Li = BRDF.SrgbToLinear(light.GetRadiance());
 
                 double scale = light.g() * cosNI / light.pdf();
 
@@ -64,7 +61,7 @@ namespace Render_Engine.Materials
                 b += fLinear.Z * Li.Z * scale;
             }
 
-            return PerfectDiffuse.LinearToSrgbClamped(new Vector3D(r, g, b));
+            return BRDF.LinearToSrgbClamped(new Vector3D(r, g, b));
         }
     }
 }

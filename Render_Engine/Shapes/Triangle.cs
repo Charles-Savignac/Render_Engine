@@ -11,11 +11,11 @@ namespace Render_Engine.Shapes
         public Point3D PointC { get; private set; }
         public Normal Normal { get; set; }
 
-        public Triangle(Point3D o, Material mat, Point3D a, Point3D b, Point3D pointc) : base(o, mat)
+        public Triangle(Point3D o, Material mat, Point3D a, Point3D b, Point3D c) : base(o, mat)
         {
             PointA = a;
             PointB = b;
-            PointC = pointc;
+            PointC = c;
 
             Vector3D edge1 = PointB - PointA;
             Vector3D edge2 = PointC - PointA;
