@@ -1,6 +1,6 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
@@ -8,10 +8,10 @@ namespace Render_Engine.Shapes
     {
         public double Radius { get; set; }
 
-        public Sphere(Util.Point3D o, Color c, double radius) : base(o, c)
+        public Sphere(Point3D o, Material mat, double radius) : base(o, mat)
         {
             Radius = radius;
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, -radius, -radius), new Util.Point3D(radius, radius, radius));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-radius, -radius, -radius), new Point3D(radius, radius, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = 4 * Math.PI * Radius * Radius;
@@ -20,7 +20,7 @@ namespace Render_Engine.Shapes
 
         public override bool Intersects(Ray worldRay, ref double t)
         {
-            Ray r = ApplyInvTransformationOnRay(worldRay);
+            Ray r = ApplyTransformationOnRay(worldRay);
 
             if (ObjectBoundingBox.Intersects(r))
             {
@@ -61,7 +61,7 @@ namespace Render_Engine.Shapes
         public override Normal GetNormal(Ray worldRay, double t)
         {
             // Step 1: Transform ray into object space
-            Ray objectRay = ApplyInvTransformationOnRay(worldRay);
+            Ray objectRay = ApplyTransformationOnRay(worldRay);
 
             // Step 2: Compute hit point in object space
             Point3D objectHit = objectRay.Origin + t * objectRay.Direction;
@@ -71,7 +71,7 @@ namespace Render_Engine.Shapes
             localNormal.Normalize();
 
             // Step 4: Transform normal back to world space
-            return ApplyTransformationOnNormal(new Normal(localNormal));
+            return ApplyInvTransformationOnNormal(new Normal(localNormal));
         }
 
         public override string ToString()

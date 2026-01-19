@@ -1,6 +1,6 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
@@ -10,13 +10,13 @@ namespace Render_Engine.Shapes
         public double RadiusOut { get; private set; }
         public Normal Normal { get; init; }
 
-        public Disk(Util.Point3D p, Color c, double radiusIn, double radiusOut) : base(p, c)
+        public Disk(Point3D o, Material mat, double radiusIn, double radiusOut) : base(o, mat)
         {
             RadiusIn = radiusIn;
             RadiusOut = radiusOut;
             Normal = new Normal(0, 1, 0);
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radiusOut, 0, -radiusOut), new Util.Point3D(radiusOut, 0, radiusOut));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-radiusOut, 0, -radiusOut), new Point3D(radiusOut, 0, radiusOut));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = Math.PI * (radiusOut * radiusOut - radiusIn * radiusIn);
@@ -28,12 +28,12 @@ namespace Render_Engine.Shapes
 
             if (ObjectBoundingBox.Intersects(r))
             {
-                Util.Point3D intersectionPoint;
+                Point3D intersectionPoint;
                 double distanceSquared;
 
                 t = -r.Origin.Y / r.Direction.Y;
 
-                intersectionPoint = new Util.Point3D(r.Origin.X + t * r.Direction.X, 0, r.Origin.Z + t * r.Direction.Z);
+                intersectionPoint = new Point3D(r.Origin.X + t * r.Direction.X, 0, r.Origin.Z + t * r.Direction.Z);
                 distanceSquared = Math.Pow(intersectionPoint.X, 2) + Math.Pow(intersectionPoint.Z, 2);
 
                 if (distanceSquared >= Math.Pow(RadiusIn, 2) && distanceSquared <= Math.Pow(RadiusOut, 2))

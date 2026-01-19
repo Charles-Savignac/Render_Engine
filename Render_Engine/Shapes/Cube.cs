@@ -1,6 +1,6 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
-using System.Drawing;
 
 namespace Render_Engine.Shapes
 {
@@ -8,13 +8,13 @@ namespace Render_Engine.Shapes
     {
         public double Size { get; private set; }
 
-        public Cube(Point3D center, Color c, double size = 1.0f) : base(center, c)
+        public Cube(Point3D o, Material mat, double size = 1.0f) : base(o, mat)
         {
             Size = size;
 
             ObjectBoundingBox = new BoundingBox(
-                new Util.Point3D(-size / 2, -size / 2, -size / 2),
-                new Util.Point3D(size / 2, size / 2, size / 2));
+                new Point3D(-size / 2, -size / 2, -size / 2),
+                new Point3D(size / 2, size / 2, size / 2));
             WorldBoundingBox = ObjectBoundingBox;
 
             Surface = 6 * size * size;

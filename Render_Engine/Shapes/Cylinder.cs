@@ -1,4 +1,5 @@
 ﻿using Render_Engine.Acceleration;
+using Render_Engine.Materials;
 using Render_Engine.Util;
 using System.Drawing;
 
@@ -10,13 +11,13 @@ namespace Render_Engine.Shapes
         public double MaxY { get; private set; }
         public double MinY { get; private set; }
 
-        public Cylinder(Util.Point3D o, Color c, double radius = 1.0f, double minY = -1.0f, double maxY = 1.0f) : base(o, c)
+        public Cylinder(Point3D o, Material mat, double radius = 1.0f, double minY = -1.0f, double maxY = 1.0f) : base(o, mat)
         {
             Radius = radius;
             MaxY = maxY;
             MinY = minY;
 
-            ObjectBoundingBox = new BoundingBox(new Util.Point3D(-radius, minY, -radius), new Util.Point3D(radius, maxY, radius));
+            ObjectBoundingBox = new BoundingBox(new Point3D(-radius, minY, -radius), new Point3D(radius, maxY, radius));
             WorldBoundingBox = new BoundingBox(ObjectBoundingBox);
 
             Surface = 2 * Math.PI * Radius * (MaxY - MinY);
@@ -66,22 +67,20 @@ namespace Render_Engine.Shapes
 
         public override Normal GetNormal(Ray worldRay, double t)
         {
-            //Ray r = ApplyTransformationOnRay(worldRay);
+            Ray r = ApplyTransformationOnRay(worldRay);
 
-            //Normal n = new Normal();
-            //VectorClass result;
-            //double z = r.Origin.Z + t * r.Direction.Z;
+            Normal n = new Normal();
+            VectorClass result;
+            double z = r.Origin.Z + t * r.Direction.Z;
 
-            //Vector3D uPrime = new Vector3D(2 * Math.PI * z, 0, -2 * Math.PI * (r.Origin.X));
-            //Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
+            Vector3D uPrime = new Vector3D(2 * Math.PI * z, 0, -2 * Math.PI * (r.Origin.X));
+            Vector3D VPrime = new Vector3D(0, MaxY - MinY, 0);
 
-            //result = uPrime.CrossProduct(VPrime);
-            //result.Normalize();
-            //n.Assigne(result);
+            result = uPrime.CrossProduct(VPrime);
+            result.Normalize();
+            n.Assigne(result);
 
-            //return ApplyInvTransformationOnNormal(n);
-
-            return ApplyInvTransformationOnNormal(new Normal(0, 1, 0));
+            return ApplyInvTransformationOnNormal(n);
         }
 
         public override string ToString()

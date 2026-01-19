@@ -32,16 +32,6 @@ namespace Render_Engine.Cameras
             W = new Vector3D(0, 0, 1);
         }
 
-        public Camera(Camera a_cam)
-        {
-            Position = a_cam.Position;
-            LookingAt = a_cam.LookingAt;
-            Up = a_cam.Up;
-            U = a_cam.U;
-            V = a_cam.V;
-            W = a_cam.W;
-        }
-
         public void SetCenter(Point3D a_p) => Position = a_p;
 
         public void SetLookAt(Point3D a_p) => LookingAt = a_p;
@@ -54,10 +44,10 @@ namespace Render_Engine.Cameras
 
             W.Normalize();
 
-            U = Vector3D.Cross(Up, W);
+            U = VectorClass.Cross(Up, W);
             U.Normalize();
 
-            V = Vector3D.Cross(W, U);
+            V = VectorClass.Cross(W, U);
 
             if (Math.Abs(Position.X - LookingAt.X) < double.Epsilon
                 && Math.Abs(Position.Z - LookingAt.Z) < double.Epsilon
@@ -78,7 +68,7 @@ namespace Render_Engine.Cameras
             }
         }
 
-        public Bitmap RenderScene(World world, Bitmap bitmap)
+        public virtual Bitmap RenderScene(World world, Bitmap bitmap)
         {
             BuildCCS();
 
@@ -98,7 +88,7 @@ namespace Render_Engine.Cameras
                         Point3D sample = world.View_plan.Sampling.SampleUnitSquare();
 
                         double px = world.View_plan.Pixel_size * (halfW - (x + sample.X));
-                        double py = world.View_plan.Pixel_size * (halfH - (y + sample.Y));
+                        double py = -world.View_plan.Pixel_size * (halfH - (y + sample.Y));
 
                         Ray ray = new Ray
                         {
@@ -108,7 +98,7 @@ namespace Render_Engine.Cameras
                             T_max = 1000
                         };
 
-                        Color c = world.Tracer.TraceRay(ray);
+                        Color c = world.Tracer.TraceRay(ray, 0);
 
                         rAcc += c.R;
                         gAcc += c.G;
@@ -126,11 +116,7 @@ namespace Render_Engine.Cameras
             return bitmap;
         }
 
-        private int Clamp(double v)
-        {
-            return (int)Math.Max(0, Math.Min(255, v));
-        }
-
+        protected static int Clamp(double v) => (int)Math.Max(0, Math.Min(255, v));
 
         protected abstract Vector3D GetRayDirection(double px, double py);
 
