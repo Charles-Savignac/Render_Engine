@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 #include "vec3.h"
-#include <iostream>
-#include <cmath>
 
 using color = vec3;
 
@@ -33,7 +31,7 @@ static color linear_to_sRGB(const color& c)
 }
 
 
-inline void write_color(std::ostream& out, color pixel_color, int samples_per_pixel = 1, float gamma = 1.0f)
+inline void write_color(std::ostream& out, color pixel_color, int samples_per_pixel = 1, float gamma = 0.5f)
 {
     // Divide the color by the number of samples to get the average
     float scale = 1.0f / samples_per_pixel;
