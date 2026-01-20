@@ -2,34 +2,26 @@
 
 #include "shape.h"
 
+#include <memory>
 #include <vector>
 
-class hittable_list : public shape {
+class shape_list : public shape {
 public:
-    std::vector<shared_ptr<shape>> objects;
+    // Public members
+    std::vector<std::shared_ptr<shape>> objects;
 
-    hittable_list() {}
-    hittable_list(shared_ptr<shape> object) { add(object); }
+    // Constructors
+    shape_list();
+    explicit shape_list(std::shared_ptr<shape> object);
 
-    void clear() { objects.clear(); }
+    // Modifiers
+    void clear();
+    void add(std::shared_ptr<shape> object);
 
-    void add(shared_ptr<shape> object) {
-        objects.push_back(object);
-    }
-
-    bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-        hit_record temp_rec;
-        bool hit_anything = false;
-        auto closest_so_far = ray_t.max;
-
-        for (const auto& object : objects) {
-            if (object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec = temp_rec;
-            }
-        }
-
-        return hit_anything;
-    }
+    // shape interface
+    bool hit(
+        const ray& r,
+        interval ray_t,
+        hit_record& rec
+    ) const override;
 };
