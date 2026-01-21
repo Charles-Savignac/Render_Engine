@@ -16,10 +16,10 @@ public:
     int    samples_per_pixel = 1;   // Count of random samples for each pixel
     int    max_depth = 10;          // Maximum number of ray bounces into scene
 
-    double vfov = 90;  // Vertical view angle (field of view)
-    point3 lookfrom = point3(0, 0, 0);   // Point camera is looking from
-    point3 lookat = point3(0, 0, -1);  // Point camera is looking at
-    vec3   vup = vec3(0, 1, 0);     // Camera-relative "up" direction
+    double vfov = 90;                   // Vertical view angle (field of view)
+    point3 lookfrom = point3(0, 0, 0);  // Point camera is looking from
+    point3 lookat = point3(0, 0, -1);   // Point camera is looking at
+    vec3   vup = vec3(0, 1, 0);         // Camera-relative "up" direction
 
     double defocus_angle = 0;  // Variation angle of rays through each pixel
     double focus_dist = 10;    // Distance from camera lookfrom point to plane of perfect focus
@@ -40,13 +40,8 @@ private:
     vec3   defocus_disk_v;       // Defocus disk vertical radius
 
     void initialize();
-    color cast_ray(const ray& r, int depth, const shape& world);
-    ray get_ray(int i, int j) const;
     vec3 sample_square() const;
-
-    point3 defocus_disk_sample() const {
-        // Returns a random point in the camera defocus disk.
-        auto p = random_in_unit_disk();
-        return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
-    }
+    ray get_ray(int i, int j) const;
+    point3 defocus_disk_sample() const;
+    color cast_ray(const ray& r, int depth, const shape& world);
 };

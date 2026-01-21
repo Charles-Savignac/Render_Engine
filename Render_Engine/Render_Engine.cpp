@@ -1,12 +1,18 @@
 #include "util.h"
 
+#include "bvh.h"
 #include "camera.h"
 #include "shape.h"
 #include "shape_list.h"
 #include "material.h"
 #include "sphere.h"
 
+#include <chrono>
+
 int main() {
+
+    const std::clock_t c_start = std::clock();
+    auto t_start = std::chrono::high_resolution_clock::now();
 
     shape_list world;
 
@@ -52,11 +58,13 @@ int main() {
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
+    world = shape_list(make_shared<bvh_node>(world));
+
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 1200;
-    cam.samples_per_pixel = 100;
+    cam.samples_per_pixel = 500;
     cam.max_depth = 50;
 
     cam.vfov = 20;
@@ -68,4 +76,8 @@ int main() {
     cam.focus_dist = 10.0;
 
     cam.render(world);
+
+    const std::clock_t c_end = std::clock();
+    const auto t_end = std::chrono::high_resolution_clock::now();
+    std::clog << std::fixed << std::setprecision(2) << "CPU time used: " << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << "ms\n";
 }

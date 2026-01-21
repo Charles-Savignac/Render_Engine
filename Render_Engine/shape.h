@@ -3,6 +3,7 @@
 #include "vec3.h"
 #include "ray.h"
 #include "interval.h"
+#include "aabb.h"
 
 class material;
 
@@ -20,10 +21,6 @@ public:
 class shape {
 public:
     virtual ~shape() = default;
-
-    virtual bool hit(
-        const ray& r,
-        interval ray_t,
-        hit_record& rec
-    ) const = 0;
+    virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
+    virtual aabb bounding_box() const = 0;
 };

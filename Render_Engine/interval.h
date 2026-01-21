@@ -7,12 +7,14 @@ public:
     // Constructors
     interval();
     interval(double min, double max);
+    interval(const interval& a, const interval& b);
 
     // Methods
     double size() const;
     double clamp(double x) const;
     bool contains(double x) const;
     bool surrounds(double x) const;
+    interval expand(double delta) const;
 
     // Predefined intervals
     static const interval empty;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shape.h"
+#include "aabb.h"
 
 #include <memory>
 #include <vector>
@@ -19,9 +20,9 @@ public:
     void add(std::shared_ptr<shape> object);
 
     // shape interface
-    bool hit(
-        const ray& r,
-        interval ray_t,
-        hit_record& rec
-    ) const override;
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
+    aabb bounding_box() const override;
+
+private:
+    aabb bbox;
 };

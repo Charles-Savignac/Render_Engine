@@ -14,14 +14,11 @@ void shape_list::clear() {
 
 void shape_list::add(std::shared_ptr<shape> object) {
     objects.push_back(object);
+    bbox = aabb(bbox, object->bounding_box());
 }
 
 // shape interface
-bool shape_list::hit(
-    const ray& r,
-    interval ray_t,
-    hit_record& rec
-) const
+bool shape_list::hit(const ray& r, interval ray_t, hit_record& rec) const
 {
     hit_record temp_rec;
     bool hit_anything = false;
@@ -37,3 +34,5 @@ bool shape_list::hit(
 
     return hit_anything;
 }
+
+aabb shape_list::bounding_box() const { return bbox; }

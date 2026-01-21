@@ -3,9 +3,12 @@
 #include <cmath>
 
 // Constructor
-sphere::sphere(const point3& center, double radius, shared_ptr<material> mat) : center(center), radius(std::fmax(0,radius)), mat(mat) {}
+sphere::sphere(const point3& center, double radius, shared_ptr<material> mat) : center(center), radius(std::fmax(0,radius)), mat(mat) 
+{
+    auto rvec = vec3(radius, radius, radius);
+    bbox = aabb(center - rvec, center + rvec);
+}
 
-// shape interface
 bool sphere::hit(const ray& r,interval ray_t,hit_record& rec) const
 {
     vec3 oc = center - r.origin();
@@ -36,3 +39,5 @@ bool sphere::hit(const ray& r,interval ray_t,hit_record& rec) const
 
     return true;
 }
+
+aabb sphere::bounding_box() const { return bbox; }

@@ -9,12 +9,14 @@
 void camera::render(const shape& world) {
 	initialize();
 
-	const int num_threads = std::thread::hardware_concurrency();
+	const int num_threads = std::thread::hardware_concurrency();;
 	std::vector<std::ostringstream> buffers(num_threads);
+	std::clog << "task seperated on: " << num_threads << " threads\n\rScanlines remaining: ";
 
+	std::atomic<int> rows_done{ 0 };
+	// Worker function
 	auto render_rows = [&](int thread_id, int start_row, int end_row) {
 		for (int j = start_row; j < end_row; ++j) {
-			std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 			for (int i = 0; i < image_width; ++i) {
 				color pixel_color(0, 0, 0);
 
@@ -22,13 +24,27 @@ void camera::render(const shape& world) {
 					pixel_color += cast_ray(get_ray(i, j), max_depth, world);
 				}
 
-				write_color(buffers[thread_id], pixel_samples_scale * pixel_color);
+				write_color(buffers[thread_id],
+					pixel_samples_scale * pixel_color);
 			}
+			++rows_done; // report progress
 		}
 		};
 
-	// Divide rows among threads
+	// Progress reporter (single thread)
+	std::thread progress_thread([&]() {
+		while (rows_done < image_height) {
+			std::clog << "\rScanlines remaining: "
+				<< (image_height - rows_done.load())
+				<< ' ' << std::flush;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		}
+		});
+
+	// Launch worker threads
 	std::vector<std::thread> threads;
+	threads.reserve(num_threads);
+
 	int rows_per_thread = image_height / num_threads;
 	int remaining_rows = image_height % num_threads;
 	int current_row = 0;
@@ -36,24 +52,25 @@ void camera::render(const shape& world) {
 	for (int t = 0; t < num_threads; ++t) {
 		int start_row = current_row;
 		int end_row = start_row + rows_per_thread + (t < remaining_rows ? 1 : 0);
+
 		threads.emplace_back(render_rows, t, start_row, end_row);
 		current_row = end_row;
 	}
 
-	// Join threads
-	for (auto& th : threads) {
+	// Wait for workers
+	for (auto& th : threads)
 		th.join();
-	}
 
-	// Write PPM header first
+	// Wait for progress reporter
+	progress_thread.join();
+
+	// Output image
 	std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
-	// Merge buffers in row order
-	for (int t = 0; t < num_threads; ++t) {
+	for (int t = 0; t < num_threads; ++t)
 		std::cout << buffers[t].str();
-	}
 
-	std::clog << "\rDone.                 \n";
+	std::clog << "\rDone.                     \n";
 }
 
 void camera::initialize() {
@@ -129,4 +146,10 @@ color camera::cast_ray(const ray& r, int depth, const shape& world) {
 	vec3 unit_direction = unit_vector(r.direction());
 	auto a = 0.5 * (unit_direction.y() + 1.0);
 	return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+}
+
+point3 camera::defocus_disk_sample() const {
+	// Returns a random point in the camera defocus disk.
+	auto p = random_in_unit_disk();
+	return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 }
