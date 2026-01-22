@@ -34,6 +34,15 @@
     <Filter Include="Source Files\Acceleration">
       <UniqueIdentifier>{b5f00415-f5bd-41fb-9da6-f1ae003486c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Textures">
+      <UniqueIdentifier>{8e8cc27f-6aa4-446b-ad92-9c134bb56dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Materials">
+      <UniqueIdentifier>{456a4e0c-5055-453a-8d21-6c3ca75fdb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Textures">
+      <UniqueIdentifier>{05980f2c-1f89-42d7-a56d-1678bb4f0f7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Render_Engine.cpp">
@@ -68,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="bvh.cpp">
       <Filter>Source Files\Acceleration</Filter>
+    </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>Source Files\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="img_loader.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +124,18 @@
     </ClInclude>
     <ClInclude Include="bvh.h">
       <Filter>Header Files\Acceleration</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="img_loader.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="quad.h">
+      <Filter>Header Files\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
