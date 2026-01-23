@@ -110,6 +110,19 @@ void camera::initialize() {
 	defocus_disk_v = v * defocus_radius;
 }
 
+
+
+vec3 camera::sample_square() const {
+	// Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+	return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+}
+
+point3 camera::defocus_disk_sample() const {
+	// Returns a random point in the camera defocus disk.
+	auto p = random_in_unit_disk();
+	return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
+}
+
 ray camera::get_ray(int i, int j) const {
 	// Construct a camera ray originating from the defocus disk and directed at a randomly
 	// sampled point around the pixel location i, j.
@@ -125,31 +138,24 @@ ray camera::get_ray(int i, int j) const {
 	return ray(ray_origin, ray_direction);
 }
 
-vec3 camera::sample_square() const {
-	// Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
-	return vec3(random_double() - 0.5, random_double() - 0.5, 0);
-}
-
 color camera::cast_ray(const ray& r, int depth, const shape& world) {
+
 	if (depth <= 0)
 		return color(0, 0, 0);
 
 	hit_record rec;
-	if (world.hit(r, interval(0.001, infinity), rec)) {
-		ray scattered;
-		color attenuation;
-		if (rec.mat->scatter(r, rec, attenuation, scattered))
-			return attenuation * cast_ray(scattered, depth - 1, world);
-		return color(0, 0, 0);
-	}
+	// If the ray hits nothing, return the background color.
+	if (!world.hit(r, interval(0.001, infinity), rec))
+		return background;
 
-	vec3 unit_direction = unit_vector(r.direction());
-	auto a = 0.5 * (unit_direction.y() + 1.0);
-	return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
-}
+	ray scattered;
+	color attenuation;
+	color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
 
-point3 camera::defocus_disk_sample() const {
-	// Returns a random point in the camera defocus disk.
-	auto p = random_in_unit_disk();
-	return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
+	if (!rec.mat->scatter(r, rec, attenuation, scattered))
+		return color_from_emission;
+
+	color color_from_scatter = attenuation * cast_ray(scattered, depth - 1, world);
+
+	return color_from_emission + color_from_scatter;
 }

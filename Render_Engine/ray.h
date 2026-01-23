@@ -4,18 +4,18 @@
 
 class ray {
 public:
-    // Constructors
-    ray();
-    ray(const point3& origin, const vec3& direction);
+	// Constructors
+	ray();
+	ray(const point3& origin, const vec3& direction);
 
-    // Accessors
-    const point3& origin() const;
-    const vec3& direction() const;
+	// Accessors
+	const point3& origin() const;
+	const vec3& direction() const;
 
-    // Methods
-    point3 at(double t) const;
+	// Methods
+	point3 at(double t) const;
 
 private:
-    point3 orig;
-    vec3 dir;
+	point3 orig;
+	vec3 dir;
 };

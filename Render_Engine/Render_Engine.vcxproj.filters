@@ -43,6 +43,15 @@
     <Filter Include="Source Files\Textures">
       <UniqueIdentifier>{05980f2c-1f89-42d7-a56d-1678bb4f0f7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Transformations">
+      <UniqueIdentifier>{0d0afd21-17eb-49d8-8a81-d9336795493e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Transformations">
+      <UniqueIdentifier>{f443001e-3143-41eb-9372-a83d4c7b2f46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\External">
+      <UniqueIdentifier>{435a11ff-1164-4dc5-a46b-50d07d592f8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Render_Engine.cpp">
@@ -87,6 +96,15 @@
     <ClCompile Include="img_loader.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="rotate.cpp">
+      <Filter>Source Files\Transformations</Filter>
+    </ClCompile>
+    <ClCompile Include="translate.cpp">
+      <Filter>Source Files\Transformations</Filter>
+    </ClCompile>
+    <ClCompile Include="quad.cpp">
+      <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shape.h">
@@ -128,14 +146,20 @@
     <ClInclude Include="texture.h">
       <Filter>Header Files\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="img_loader.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="quad.h">
       <Filter>Header Files\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="translate.h">
+      <Filter>Header Files\Transformations</Filter>
+    </ClInclude>
+    <ClInclude Include="rotate.h">
+      <Filter>Header Files\Transformations</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\External</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
