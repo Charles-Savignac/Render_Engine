@@ -1,13 +1,4 @@
-#include "bvh.h"
-#include "camera.h"
-#include "shape.h"
-#include "shape_list.h"
-#include "material.h"
-#include "sphere.h"
-#include "texture.h"
-#include "quad.h"
-#include "translate.h"
-#include "rotate.h"
+#include "world.h"
 
 #include <chrono>
 
@@ -28,153 +19,14 @@ static void show_time(double elapsed_ms) {
         << '\n';
 }
 
-void cornell_box() {
-    shape_list world;
-
-    auto red = make_shared<lambertian>(color(.65, .05, .05));
-    auto white = make_shared<lambertian>(color(.73, .73, .73));
-    auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto light = make_shared<diffuse_light>(color(15, 15, 15));
-
-    world.add(make_shared<quad>(point3(555, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), green));
-    world.add(make_shared<quad>(point3(0, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), red));
-    world.add(make_shared<quad>(point3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), light));
-    world.add(make_shared<quad>(point3(0, 0, 0), vec3(555, 0, 0), vec3(0, 0, 555), white));
-    world.add(make_shared<quad>(point3(555, 555, 555), vec3(-555, 0, 0), vec3(0, 0, -555), white));
-    world.add(make_shared<quad>(point3(0, 0, 555), vec3(555, 0, 0), vec3(0, 555, 0), white));
-
-    shared_ptr<shape> box1 = box(point3(0, 0, 0), point3(165, 330, 165), white);
-    box1 = make_shared<rotate_y>(box1, 15);
-    box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    world.add(box1);
-
-    shared_ptr<shape> box2 = box(point3(0, 0, 0), point3(165, 165, 165), white);
-    box2 = make_shared<rotate_y>(box2, -18);
-    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    world.add(box2);
-
-    camera cam;
-
-    cam.aspect_ratio = 1.0;
-    cam.image_width = 600;
-    cam.samples_per_pixel = 50;
-    cam.max_depth = 10;
-    cam.background = color(0, 0, 0);
-
-    cam.vfov = 40;
-    cam.lookfrom = point3(278, 278, -800);
-    cam.lookat = point3(278, 278, 0);
-    cam.vup = vec3(0, 1, 0);
-
-    cam.defocus_angle = 0;
-
-    cam.render(world);
-}
-
 int main() {
 
     const std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
-    shape_list world;
 
-    //auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
-    //world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, ground_material));
-
-    //for (int a = -11; a < 11; a++) {
-    //    for (int b = -11; b < 11; b++) {
-    //        auto choose_mat = random_double();
-    //        point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
-
-    //        if ((center - point3(4, 0.2, 0)).length() > 0.9) {
-    //            shared_ptr<material> sphere_material;
-
-    //            if (choose_mat < 0.8) {
-    //                // diffuse
-    //                auto albedo = color::random() * color::random();
-    //                sphere_material = make_shared<lambertian>(albedo);
-    //                world.add(make_shared<sphere>(center, 0.2, sphere_material));
-    //            }
-    //            else if (choose_mat < 0.95) {
-    //                // metal
-    //                auto albedo = color::random(0.5, 1);
-    //                auto fuzz = random_double(0, 0.5);
-    //                sphere_material = make_shared<metal>(albedo, fuzz);
-    //                world.add(make_shared<sphere>(center, 0.2, sphere_material));
-    //            }
-    //            else {
-    //                // glass
-    //                sphere_material = make_shared<dielectric>(1.5);
-    //                world.add(make_shared<sphere>(center, 0.2, sphere_material));
-    //            }
-    //        }
-    //    }
-    //}
-
-    //auto material1 = make_shared<dielectric>(1.5);
-    //world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
-
-    //auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
-    //world.add(make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
-
-    //auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
-    //world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
-
-    //world = shape_list(make_shared<bvh_node>(world));
-
-    //camera cam;
-
-    //cam.aspect_ratio = 16.0 / 9.0;
-    //cam.image_width = 1200;
-    //cam.samples_per_pixel = 1;
-    //cam.max_depth = 50;
-    //cam.background = color(0.70, 0.80, 1.00);
-
-    //cam.vfov = 20;
-    //cam.lookfrom = point3(13, 2, 3);
-    //cam.lookat = point3(0, 0, 0);
-    //cam.vup = vec3(0, 1, 0);
-
-    //cam.defocus_angle = 0.6;
-    //cam.focus_dist = 10.0;
-
-    //========================================================================================================================================
-    //auto texture_checkered = make_shared<checker_texture>(0.5, color(.1, .1, .1), color(.9, .9, .9));
-
-    //auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
-    //auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
-    //auto material_left = make_shared<dielectric>(1.50);
-    //auto material_bubble = make_shared<dielectric>(1.00 / 1.50);
-    //auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
-
-    //world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, make_shared<lambertian>(texture_checkered)));
-    //world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
-    //world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
-    //world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.4, material_bubble));
-    //world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
-
-    //world = shape_list(make_shared<bvh_node>(world));
-
-    //camera cam;
-
-    //cam.aspect_ratio = 16.0 / 9.0;
-    //cam.image_width = 1080;
-    //cam.samples_per_pixel = 500;
-    //cam.max_depth = 50;
-    //cam.background = color(0.70, 0.80, 1.00);
-
-
-    //cam.vfov = 25;
-    //cam.lookfrom = point3(-2, 2, 1);
-    //cam.lookat = point3(0, 0, -1);
-    //cam.vup = vec3(0, 1, 0);
-
-
-    //cam.defocus_angle = 0;
-    //cam.focus_dist = 3.4;
-
-    //cam.render(world);
-
-    cornell_box();
+    world w;
+    w.build();
+    w.render();
 
     const std::clock_t c_end = std::clock();
     show_time(1000.0 * (c_end - c_start) / CLOCKS_PER_SEC);

@@ -3,10 +3,10 @@
 #include "vec3.h"
 #include "ray.h"
 #include "color.h"
-#include "shape.h"
-#include "material.h"
 
 #include <iostream>
+
+class world;
 
 class camera {
 public:
@@ -14,7 +14,6 @@ public:
 	int    image_width = 100;       // Rendered image width in pixel count
 	int    samples_per_pixel = 1;   // Count of random samples for each pixel
 	int    max_depth = 10;          // Maximum number of ray bounces into scene
-	color  background;              // Scene background color
 
 	double vfov = 90;                   // Vertical view angle (field of view)
 	point3 lookfrom = point3(0, 0, 0);  // Point camera is looking from
@@ -24,7 +23,7 @@ public:
 	double defocus_angle = 0;  // Variation angle of rays through each pixel
 	double focus_dist = 10;    // Distance from camera lookfrom point to plane of perfect focus
 
-	void render(const shape& world);
+	void render(const world& w);
 
 private:
 	int    image_height;        // Rendered image height
@@ -42,7 +41,7 @@ private:
 	vec3 sample_square() const;
 	ray get_ray(int i, int j) const;
 	point3 defocus_disk_sample() const;
-	color cast_ray(const ray& r, int depth, const shape& world);
+	color cast_ray(const ray& r, int depth, const world& w);
 
 
 	//color cast_ray_whitted(const ray& r, int depth, const shape& world) {

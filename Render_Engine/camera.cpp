@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "world.h"
 
 #include <thread>
 #include <vector>
@@ -6,7 +7,7 @@
 #include <iostream>
 #include <mutex>
 
-void camera::render(const shape& world) {
+void camera::render(const world& w) {
 	initialize();
 
 	const int num_threads = std::thread::hardware_concurrency();;
@@ -21,7 +22,7 @@ void camera::render(const shape& world) {
 				color pixel_color(0, 0, 0);
 
 				for (int sample = 0; sample < samples_per_pixel; ++sample) {
-					pixel_color += cast_ray(get_ray(i, j), max_depth, world);
+					pixel_color += cast_ray(get_ray(i, j), max_depth, w);
 				}
 
 				write_color(buffers[thread_id],
@@ -138,15 +139,15 @@ ray camera::get_ray(int i, int j) const {
 	return ray(ray_origin, ray_direction);
 }
 
-color camera::cast_ray(const ray& r, int depth, const shape& world) {
+color camera::cast_ray(const ray& r, int depth, const world& w) {
 
 	if (depth <= 0)
 		return color(0, 0, 0);
 
 	hit_record rec;
 	// If the ray hits nothing, return the background color.
-	if (!world.hit(r, interval(0.001, infinity), rec))
-		return background;
+	if (!w.scene.hit(r, interval(0.001, infinity), rec))
+		return w.background;
 
 	ray scattered;
 	color attenuation;
@@ -155,7 +156,7 @@ color camera::cast_ray(const ray& r, int depth, const shape& world) {
 	if (!rec.mat->scatter(r, rec, attenuation, scattered))
 		return color_from_emission;
 
-	color color_from_scatter = attenuation * cast_ray(scattered, depth - 1, world);
+	color color_from_scatter = attenuation * cast_ray(scattered, depth - 1, w);
 
 	return color_from_emission + color_from_scatter;
 }
