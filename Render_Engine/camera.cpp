@@ -7,10 +7,25 @@
 #include <iostream>
 #include <mutex>
 
-void camera::render(const world& w) {
+static std::string format_time(double seconds) {
+	int s = static_cast<int>(seconds);
+	int h = s / 3600;
+	int m = (s % 3600) / 60;
+	s = s % 60;
+
+	std::ostringstream oss;
+	if (h > 0)
+		oss << h << "h ";
+	if (m > 0 || h > 0)
+		oss << m << "m ";
+	oss << s << "s";
+	return oss.str();
+}
+
+void camera::render(const world& world) {
 	initialize();
 
-	const int num_threads = std::thread::hardware_concurrency();;
+	const int num_threads = std::thread::hardware_concurrency() - 1;
 	std::vector<std::ostringstream> buffers(num_threads);
 	std::clog << "task seperated on: " << num_threads << " threads\n\rScanlines remaining: ";
 
@@ -22,7 +37,7 @@ void camera::render(const world& w) {
 				color pixel_color(0, 0, 0);
 
 				for (int sample = 0; sample < samples_per_pixel; ++sample) {
-					pixel_color += cast_ray(get_ray(i, j), max_depth, w);
+					pixel_color += cast_ray(get_ray(i, j), max_depth, world);
 				}
 
 				write_color(buffers[thread_id],
@@ -32,12 +47,28 @@ void camera::render(const world& w) {
 		}
 		};
 
+
+	auto start_time = std::chrono::steady_clock::now();
 	// Progress reporter (single thread)
 	std::thread progress_thread([&]() {
+		using clock = std::chrono::steady_clock;
+
 		while (rows_done < image_height) {
+			auto now = clock::now();
+			std::chrono::duration<double> elapsed = now - start_time;
+
+			int done = rows_done.load();
+			int remaining = image_height - done;
+
+			double rows_per_sec = done / std::max(elapsed.count(), 1e-6);
+			double eta_sec = remaining / std::max(rows_per_sec, 1e-6);
+
 			std::clog << "\rScanlines remaining: "
-				<< (image_height - rows_done.load())
-				<< ' ' << std::flush;
+				<< remaining
+				<< " | ETA: "
+				<< format_time(eta_sec)
+				<< "        " << std::flush;
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		}
 		});
@@ -110,8 +141,6 @@ void camera::initialize() {
 	defocus_disk_u = u * defocus_radius;
 	defocus_disk_v = v * defocus_radius;
 }
-
-
 
 vec3 camera::sample_square() const {
 	// Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.

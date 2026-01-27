@@ -55,7 +55,7 @@ public:
 	void add_camera() {
 		cam.aspect_ratio = 1.0;
 		cam.image_width = 600;
-		cam.samples_per_pixel = 50;
+		cam.samples_per_pixel = 500;
 		cam.max_depth = 10;
 
 		cam.vfov = 40;
