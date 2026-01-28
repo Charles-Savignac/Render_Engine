@@ -1,5 +1,7 @@
 #include "camera.h"
 #include "world.h"
+#include "pdf.h"
+#include "tracer.h"
 
 #include <thread>
 #include <vector>
@@ -7,25 +9,12 @@
 #include <iostream>
 #include <mutex>
 
-static std::string format_time(double seconds) {
-	int s = static_cast<int>(seconds);
-	int h = s / 3600;
-	int m = (s % 3600) / 60;
-	s = s % 60;
-
-	std::ostringstream oss;
-	if (h > 0)
-		oss << h << "h ";
-	if (m > 0 || h > 0)
-		oss << m << "m ";
-	oss << s << "s";
-	return oss.str();
-}
-
-void camera::render(const world& world) {
+void camera::render(const world& w) {
 	initialize();
 
 	const int num_threads = std::thread::hardware_concurrency() - 1;
+	//const int num_threads = 1;
+
 	std::vector<std::ostringstream> buffers(num_threads);
 	std::clog << "task seperated on: " << num_threads << " threads\n\rScanlines remaining: ";
 
@@ -36,39 +25,25 @@ void camera::render(const world& world) {
 			for (int i = 0; i < image_width; ++i) {
 				color pixel_color(0, 0, 0);
 
-				for (int sample = 0; sample < samples_per_pixel; ++sample) {
-					pixel_color += cast_ray(get_ray(i, j), max_depth, world);
+				for (int s_j = 0; s_j < w.sampler_type->sqrt_spp; s_j++) {
+					for (int s_i = 0; s_i < w.sampler_type->sqrt_spp; s_i++) {
+						ray r = get_ray(w, i, j, s_i, s_j);
+						pixel_color += w.tracer_type->cast_ray(r, max_depth, w);
+					}
 				}
 
-				write_color(buffers[thread_id],
-					pixel_samples_scale * pixel_color);
+				write_color(buffers[thread_id], w.sampler_type->pixel_samples_scale * pixel_color);
 			}
 			++rows_done; // report progress
 		}
 		};
 
-
-	auto start_time = std::chrono::steady_clock::now();
 	// Progress reporter (single thread)
 	std::thread progress_thread([&]() {
-		using clock = std::chrono::steady_clock;
-
 		while (rows_done < image_height) {
-			auto now = clock::now();
-			std::chrono::duration<double> elapsed = now - start_time;
-
-			int done = rows_done.load();
-			int remaining = image_height - done;
-
-			double rows_per_sec = done / std::max(elapsed.count(), 1e-6);
-			double eta_sec = remaining / std::max(rows_per_sec, 1e-6);
-
 			std::clog << "\rScanlines remaining: "
-				<< remaining
-				<< " | ETA: "
-				<< format_time(eta_sec)
-				<< "        " << std::flush;
-
+				<< (image_height - rows_done.load())
+				<< ' ' << std::flush;
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		}
 		});
@@ -109,8 +84,6 @@ void camera::initialize() {
 	image_height = int(image_width / aspect_ratio);
 	image_height = (image_height < 1) ? 1 : image_height;
 
-	pixel_samples_scale = 1.0 / samples_per_pixel;
-
 	center = lookfrom;
 
 	// Determine viewport dimensions
@@ -142,22 +115,17 @@ void camera::initialize() {
 	defocus_disk_v = v * defocus_radius;
 }
 
-vec3 camera::sample_square() const {
-	// Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
-	return vec3(random_double() - 0.5, random_double() - 0.5, 0);
-}
-
 point3 camera::defocus_disk_sample() const {
 	// Returns a random point in the camera defocus disk.
 	auto p = random_in_unit_disk();
 	return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 }
 
-ray camera::get_ray(int i, int j) const {
+ray camera::get_ray(const world& w, int i, int j, int s_i, int s_j) const {
 	// Construct a camera ray originating from the defocus disk and directed at a randomly
 	// sampled point around the pixel location i, j.
 
-	auto offset = sample_square();
+	auto offset = w.sampler_type->sample_square(s_i, s_j);
 	auto pixel_sample = pixel00_loc
 		+ ((i + offset.x()) * pixel_delta_u)
 		+ ((j + offset.y()) * pixel_delta_v);
@@ -166,26 +134,4 @@ ray camera::get_ray(int i, int j) const {
 	auto ray_direction = pixel_sample - ray_origin;
 
 	return ray(ray_origin, ray_direction);
-}
-
-color camera::cast_ray(const ray& r, int depth, const world& w) {
-
-	if (depth <= 0)
-		return color(0, 0, 0);
-
-	hit_record rec;
-	// If the ray hits nothing, return the background color.
-	if (!w.scene.hit(r, interval(0.001, infinity), rec))
-		return w.background;
-
-	ray scattered;
-	color attenuation;
-	color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
-
-	if (!rec.mat->scatter(r, rec, attenuation, scattered))
-		return color_from_emission;
-
-	color color_from_scatter = attenuation * cast_ray(scattered, depth - 1, w);
-
-	return color_from_emission + color_from_scatter;
 }

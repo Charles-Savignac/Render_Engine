@@ -132,18 +132,24 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="img_loader.cpp" />
+    <ClCompile Include="integral.cpp" />
     <ClCompile Include="interval.cpp" />
     <ClCompile Include="material.cpp" />
+    <ClCompile Include="onb.cpp" />
+    <ClCompile Include="pdf.cpp" />
     <ClCompile Include="quad.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="Render_Engine.cpp" />
     <ClCompile Include="rotate.cpp" />
+    <ClCompile Include="sampler.cpp" />
     <ClCompile Include="shape.cpp" />
     <ClCompile Include="shape_list.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="tracer.cpp" />
     <ClCompile Include="translate.cpp" />
     <ClCompile Include="vec3.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.h" />
@@ -153,14 +159,18 @@
     <ClInclude Include="img_loader.h" />
     <ClInclude Include="interval.h" />
     <ClInclude Include="material.h" />
+    <ClInclude Include="onb.h" />
+    <ClInclude Include="pdf.h" />
     <ClInclude Include="quad.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="rotate.h" />
+    <ClInclude Include="sampler.h" />
     <ClInclude Include="shape.h" />
     <ClInclude Include="shape_list.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="tracer.h" />
     <ClInclude Include="translate.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="vec3.h" />

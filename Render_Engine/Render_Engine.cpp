@@ -1,4 +1,4 @@
-#include "world.h"
+#include "world.h";
 
 #include <chrono>
 
@@ -19,11 +19,12 @@ static void show_time(double elapsed_ms) {
         << '\n';
 }
 
-int main() {
 
+int main() {
+    
     const std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
-
+    
     world w;
     w.build();
     w.render();

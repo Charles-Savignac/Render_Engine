@@ -5,10 +5,12 @@
 // ------------------------------------------------------------
 // material
 // ------------------------------------------------------------
-bool material::scatter(const ray&, const hit_record&, color&, ray&) const {
+bool material::scatter(const ray&, const hit_record& rec, scatter_record& srec) const {
 	return false;
 }
-
+double material::scattering_pdf(const ray& r_in, const hit_record& rec, const ray& scattered) const {
+	return 0;
+}
 // ------------------------------------------------------------
 // lambertian
 // ------------------------------------------------------------
@@ -17,31 +19,32 @@ bool material::scatter(const ray&, const hit_record&, color&, ray&) const {
 lambertian::lambertian(const color& albedo) : tex(make_shared<solid_color>(albedo)) {}
 lambertian::lambertian(shared_ptr<texture> tex) : tex(tex) {}
 
-bool lambertian::scatter(const ray&, const hit_record& rec, color& attenuation, ray& scattered) const {
-	auto scatter_direction = rec.normal + random_unit_vector();
-
-	// Catch degenerate scatter direction
-	if (scatter_direction.near_zero())
-		scatter_direction = rec.normal;
-
-	scattered = ray(rec.p, scatter_direction);
-	attenuation = tex->value(rec.u, rec.v, rec.p);
+bool lambertian::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const {
+	srec.attenuation = tex->value(rec.u, rec.v, rec.p);
+	srec.pdf_ptr = make_shared<cosine_pdf>(rec.normal);
+	srec.skip_pdf = false;
 	return true;
 }
 
+double  lambertian::scattering_pdf(const ray& r_in, const hit_record& rec, const ray& scattered) const  {
+	auto cos_theta = dot(rec.normal, unit_vector(scattered.direction()));
+	return cos_theta < 0 ? 0 : cos_theta / pi;
+}
 // ------------------------------------------------------------
 // metal
 // ------------------------------------------------------------
 metal::metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
 
-bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
+bool metal::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const {
 	vec3 reflected = reflect(r_in.direction(), rec.normal);
 	reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
 
-	scattered = ray(rec.p, reflected);
-	attenuation = albedo;
+	srec.attenuation = albedo;
+	srec.pdf_ptr = nullptr;
+	srec.skip_pdf = true;
+	srec.skip_pdf_ray = ray(rec.p, reflected);
 
-	return (dot(scattered.direction(), rec.normal) > 0);
+	return true;
 }
 
 // ------------------------------------------------------------
@@ -49,8 +52,11 @@ bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, 
 // ------------------------------------------------------------
 dielectric::dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
-bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
-	attenuation = color(1.0, 1.0, 1.0);
+bool dielectric::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const {
+	srec.attenuation = color(1.0, 1.0, 1.0);
+	srec.pdf_ptr = nullptr;
+	srec.skip_pdf = true;
+
 	double ri = rec.front_face ? (1.0 / refraction_index) : refraction_index;
 
 	vec3 unit_direction = unit_vector(r_in.direction());
@@ -65,7 +71,7 @@ bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuat
 	else
 		direction = refract(unit_direction, rec.normal, ri);
 
-	scattered = ray(rec.p, direction);
+	srec.skip_pdf_ray = ray(rec.p, direction);
 	return true;
 }
 
@@ -84,6 +90,8 @@ diffuse_light::diffuse_light(std::shared_ptr<texture> tex) : tex(tex) {}
 diffuse_light::diffuse_light(const color& emit) : tex(std::make_shared<solid_color>(emit)) {}
 
 // Methods
-color diffuse_light::emitted(double u, double v, const point3& p) const {
+color diffuse_light::emitted(const ray& r_in, const hit_record& rec, double u, double v, const point3& p) const {
+	if (!rec.front_face)
+		return color(0, 0, 0);
 	return tex->value(u, v, p);
 }

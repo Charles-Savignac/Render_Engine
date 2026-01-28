@@ -8,7 +8,7 @@ quad::quad(const point3& Q, const vec3& u, const vec3& v, std::shared_ptr<materi
 	normal = unit_vector(n);
 	D = dot(normal, Q);
 	w = n / dot(n, n);
-
+	area = n.length();
 	set_bounding_box();
 }
 
@@ -81,4 +81,23 @@ std::shared_ptr<shape_list> box(const point3& a, const point3& b, std::shared_pt
 	sides->add(std::make_shared<quad>(point3(min.x(), max.y(), max.z()), dx, -dz, mat)); //_
 
 	return sides;
+}
+
+double quad::pdf_value(const point3& origin, const vec3& direction) const {
+	hit_record rec;
+	if (!this->hit(ray(origin, direction), interval(0.001, infinity), rec))
+		return 0;
+
+	auto distance_squared = rec.t * rec.t * direction.length_squared();
+	auto cosine = std::fabs(dot(direction, rec.normal) / direction.length());
+
+	return distance_squared / (cosine * area);
+}
+
+vec3 quad::random(const point3& origin) const {
+	return Q + (random_double() * u) + (random_double() * v) - origin;
+}
+
+point3 quad::get_center() const {
+	return Q + 0.5 * u + 0.5 * v;
 }

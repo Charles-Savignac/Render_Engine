@@ -25,4 +25,12 @@ public:
 	virtual ~shape() = default;
 	virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
 	virtual aabb bounding_box() const = 0;
+
+	virtual point3 get_center() const {
+		return point3(0, 0, 0);
+	}
+
+	virtual double pdf_value(const point3& origin, const vec3& direction) const;
+
+	virtual vec3 random(const point3& origin) const;
 };

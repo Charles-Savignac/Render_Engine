@@ -23,6 +23,9 @@ public:
 	bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
 	aabb bounding_box() const override;
 
+	double pdf_value(const point3& origin, const vec3& direction) const override;
+	vec3 random(const point3& origin) const override;
+
 private:
 	aabb bbox;
 };

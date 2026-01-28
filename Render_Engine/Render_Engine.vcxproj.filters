@@ -52,6 +52,18 @@
     <Filter Include="Header Files\External">
       <UniqueIdentifier>{435a11ff-1164-4dc5-a46b-50d07d592f8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{67f3c9df-5e5c-4c0e-9a3b-41d9476176b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{d5f9c802-7a42-4eae-bb55-d7c589741215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sampling">
+      <UniqueIdentifier>{9a43368e-7eae-411c-9106-9140230d5044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sampling">
+      <UniqueIdentifier>{f662717e-584b-41ed-838c-80669fdd37a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Render_Engine.cpp">
@@ -78,9 +90,6 @@
     <ClCompile Include="sphere.cpp">
       <Filter>Source Files\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="aabb.cpp">
       <Filter>Source Files\Acceleration</Filter>
     </ClCompile>
@@ -104,6 +113,27 @@
     </ClCompile>
     <ClCompile Include="quad.cpp">
       <Filter>Source Files\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="onb.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="pdf.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="integral.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="tracer.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sampler.cpp">
+      <Filter>Source Files\Sampling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,9 +160,6 @@
     </ClInclude>
     <ClInclude Include="color.h">
       <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="material.h">
       <Filter>Header Files\Materials</Filter>
@@ -161,8 +188,23 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files\External</Filter>
     </ClInclude>
+    <ClInclude Include="onb.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="pdf.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="world.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tracer.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="sampler.h">
+      <Filter>Header Files\Sampling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

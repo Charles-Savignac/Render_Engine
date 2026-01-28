@@ -37,3 +37,18 @@ bool shape_list::hit(const ray& r, interval ray_t, hit_record& rec) const {
 aabb shape_list::bounding_box() const {
 	return bbox;
 }
+
+double shape_list::pdf_value(const point3& origin, const vec3& direction) const {
+	auto weight = 1.0 / objects.size();
+	auto sum = 0.0;
+
+	for (const auto& object : objects)
+		sum += weight * object->pdf_value(origin, direction);
+
+	return sum;
+}
+
+vec3  shape_list::random(const point3& origin) const {
+	auto int_size = int(objects.size());
+	return objects[random_int(0, int_size - 1)]->random(origin);
+}
