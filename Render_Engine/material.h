@@ -31,6 +31,8 @@ class lambertian : public material {
 public:
 	//lambertian(const color& albedo);
 	lambertian(const color& albedo);
+	lambertian(const std::string& hex);
+
 	lambertian(shared_ptr<texture> tex);
 
 	bool scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const override;

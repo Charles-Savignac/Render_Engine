@@ -10,8 +10,8 @@ world::~world() = default;
 
 void world::build() {
     background = BLACK;
-    tracer_type = std::make_unique<path_tracing>();
-	sampler_type = std::make_unique<stratified>(500);
+    tracer_type = std::make_unique<ray_tracing>();
+	sampler_type = std::make_unique<uniform>(1);
 
     add_shapes();
     add_lights();

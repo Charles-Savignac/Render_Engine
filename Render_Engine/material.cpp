@@ -17,6 +17,8 @@ double material::scattering_pdf(const ray& r_in, const hit_record& rec, const ra
 //lambertian::lambertian(const color& albedo) : albedo(albedo) { }
 
 lambertian::lambertian(const color& albedo) : tex(make_shared<solid_color>(albedo)) {}
+lambertian::lambertian(const std::string& hex) : tex(make_shared<solid_color>(hex_to_color(hex))) {}
+
 lambertian::lambertian(shared_ptr<texture> tex) : tex(tex) {}
 
 bool lambertian::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const {
