@@ -35,58 +35,44 @@ color path_tracing::cast_ray(const ray& r, int depth, const world& w) const {
 }
 
 color ray_tracing::cast_ray(const ray& r, int depth, const world& w) const {
-	// Base case: stop recursion
 	if (depth <= 0)
 		return color(0, 0, 0);
 
 	hit_record rec;
-	// Ray misses the scene
 	if (!w.scene.hit(r, interval(0.001, infinity), rec))
 		return w.background;
 
-	// Emission from the material (if any)
-	color emitted = rec.mat->emitted(r, rec, rec.u, rec.v, rec.p);
-
+	color Le = rec.mat->emitted(r, rec, rec.u, rec.v, rec.p);
 	scatter_record srec;
-	// Material does not scatter: just emit
-	if (!rec.mat->scatter(r, rec, srec))
-		return emitted;
 
-	color scattered_color(0, 0, 0);
+	if (rec.mat->scatter(r, rec, srec) && srec.skip_pdf)
+		return Le + srec.attenuation * cast_ray(srec.skip_pdf_ray, depth - 1, w);
 
-	if (!srec.skip_pdf) {
-		for (int i = 0; i < w.lights.objects.size(); ++i) {
-			
-			// For point light illumination
-			//vec3 to_light = w.lights.objects[i]->get_center() - rec.p;
+	color L_direct(0, 0, 0);
+	color diffuse_brdf = srec.attenuation * (1.0 / pi);
 
-			// Sample a random point on the light
-			vec3 to_light = w.lights.objects[i]->random(rec.p);
-			
-			// Store distance to light squared for interval
-			double distance_squared = to_light.length_squared();
-			vec3 light_dir = unit_vector(to_light);
+	for (size_t i = 0; i < w.lights.objects.size(); ++i) {
 
-			// Create shadow ray
-			//ray shadow_ray(rec.p, light_dir);
-			ray shadow_ray(rec.p, light_dir);
-			hit_record temp_rec;
-			scatter_record temp_srec;
+		vec3 to_light = w.lights.objects[i]->random(rec.p);
+		double dist = to_light.length();
+		if (dist <= 0.0) continue;
 
-			// If something blocks the light and is not a light, skip this light
-			if (w.scene.hit(shadow_ray, interval(EPSILON, sqrt(distance_squared)), temp_rec)
-				&& temp_rec.mat->scatter(shadow_ray, temp_rec, temp_srec))
-					continue;
+		vec3 wi = unit_vector(to_light);
 
-			// Lambert cosine law
-			double n_dot_l = fmax(dot(rec.normal, light_dir), 0.0);
-			scattered_color += srec.attenuation * n_dot_l;
-		}
+		ray shadow_ray(rec.p, wi);
+		hit_record lrec;
+
+		if (w.scene.hit(shadow_ray, interval(EPSILON, dist + EPSILON), lrec) && dynamic_cast<const diffuse_light*>(lrec.mat.get()) == nullptr)
+			continue;
+
+		color Le_light(0, 0, 0);
+		//if (w.scene.hit(shadow_ray, interval(EPSILON, dist + EPSILON), lrec))
+		if(lrec.mat)
+			Le_light = lrec.mat->emitted(shadow_ray, lrec, lrec.u, lrec.v, lrec.p);
+
+		double n_dot_l = std::max(0.0, dot(rec.normal, wi));
+		L_direct += diffuse_brdf * Le_light * n_dot_l / sqrt(dist);
 	}
 
-	// Recursively trace scattered ray
-	color recursive_color = cast_ray(srec.skip_pdf_ray, depth - 1, w);
-
-	// Combine emission, direct lighting, and recursive contribution
-	return emitted + scattered_color + srec.attenuation * recursive_color;
+	return Le + L_direct;
 }

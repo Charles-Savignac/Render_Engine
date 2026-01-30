@@ -30,6 +30,10 @@ public:
 	double length_squared() const;
 	bool near_zero() const;
 
+	double max() const {
+		return std::max(x(), std::max(y(), z()));
+	}
+
 	static vec3 random();
 	static vec3 random(double min, double max);
 
