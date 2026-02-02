@@ -60,13 +60,11 @@ color ray_tracing::cast_ray(const ray& r, int depth, const world& w) const {
 		vec3 wi = unit_vector(to_light);
 
 		ray shadow_ray(rec.p, wi);
+		color Le_light(0, 0, 0);
 		hit_record lrec;
 
-		if (w.scene.hit(shadow_ray, interval(EPSILON, dist + EPSILON), lrec) && dynamic_cast<const diffuse_light*>(lrec.mat.get()) == nullptr)
-			continue;
+		w.scene.hit(shadow_ray, interval(EPSILON, dist + EPSILON), lrec);
 
-		color Le_light(0, 0, 0);
-		//if (w.scene.hit(shadow_ray, interval(EPSILON, dist + EPSILON), lrec))
 		if(lrec.mat)
 			Le_light = lrec.mat->emitted(shadow_ray, lrec, lrec.u, lrec.v, lrec.p);
 
